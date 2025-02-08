@@ -1,0 +1,359 @@
+# Logistic Models and Deviance
+
+When fitting a logistic regression model to a data set with a binary response, R
+outputs, among others, a **null deviance** and **residual deviance**, and
+their respective degrees of freedom. Have you ever wondered what these values
+mean and how they are obtained? And how can we actually use these values to
+assess the goodness of fit of our model?
+
+In this chapter, we will fit a logistic regression model to a heart failure 
+data set and explore the results to answer these questions.
+
+```{r echo = FALSE}
+heart <- readr::read_csv(file = "data/heart.xls", show_col_types = FALSE)
+heart <- head(heart, 20)
+```
+
+## Models
+
+To understand what deviance is, we must first understand the following three
+models:
+
+* the **null** model ($M_0$),
+* the **proposed** model ($M_p$),
+* and the **saturated** model ($M_s$).
+
+These three models are used to calculate the two deviance values outputted by R,
+i.e., the null deviance (the deviance of $M_0$) and the residual deviance(the
+deviance of $M_p$).
+
+### Proposed Model
+
+The proposed model $M_p$ is the model of interest. In our example, it is the
+model that is used to estimate the probability of heart disease for each patient
+conditioning on that patient's age. The model is represented as follows:
+
+$$
+logit(\pi_i) = \beta_0 + \beta_1 \times Age_i + \epsilon_i
+$$
+
+with $\pi_i = P(HD_i = 1 | Age_i)$ the conditional probability of a heart
+disease for patient $i$, $Age_i$ the age patient $i$, and $\epsilon_i$ the
+random error of the model for the $i$'th observation. We can fit the proposed
+model as follows:
+
+```{r}
+fit_p <- glm(
+  formula = HeartDisease ~ Age,
+  data = heart,
+  family = binomial(link = "logit")
+)
+```
+
+```{r echo = FALSE}
+summary(fit_p)
+```
+
+Note that R outputs the null deviance $D_0$ and the residual deviance $D_p$,
+which are $D_0 = `r round(fit_p$null.deviance, 1)`$ and 
+$D_p = `r round(fit_p$deviance, 1)`$.
+
+### Null Model
+
+The null model $M_0$ is a model without any predictors. It only contains an 
+intercept $\beta_0$:
+
+$$
+logit(\pi_i) = \beta_0 + \epsilon_i
+$$
+
+We can see that the fitted probability of heart disease will be the same for 
+every patient in the data set. We can fit a null model to the data as follows:
+
+```{r}
+fit_0 <- glm(
+  formula = HeartDisease ~ 1,
+  data = heart,
+  family = binomial(link = "logit")
+)
+```
+
+which gives us:
+
+```{r echo = FALSE}
+summary(fit_0)
+```
+
+Again, note that R outputs $D_0$ and $D_p$. The deviance values are the same 
+because, in this case, the proposed model $M_p$ equals the null model $M_0$. 
+Therefore, the null deviance $D_0 = `r round(fit_0$null.deviance, 1)`$ equals
+the residual deviance $D_p = `r round(fit_0$deviance, 1)`$.
+
+### Saturated Model
+
+A saturated model is a model that perfectly fits data. The estimated probability
+of a heart disease will match the outcome for each patient. If patient $i$ has a
+heart disease ($HD_i = 1$), then $\hat{\pi_i} = 1$. If patient $i$ does not have
+a heart disease ($HD_i = 0$), then $\hat{\pi_i} = 0$. We will not fit a 
+saturated model $M_s$ as such to the data, but continue our explanation knowing 
+the fact that the model perfectly predicts the outcome for each observation $i$.
+
+### Models and Deviance
+
+Because the saturated model $M_s$ perfectly fits the data, we will use $M_s$ as 
+our reference point for **goodness-of-fit**. The proposed model $M_p$ and null 
+model $M_0$ are compared to the saturated model in terms of goodness-of-fit. The 
+result of these comparisons is a deviance for each comparison. The deviance is 
+thus a measure that quantifies to what degree the null model and residual model 
+differ (deviate) from the saturated model in terms of goodness-of-fit. To 
+calculate the actual deviance, we use the likelihoods and log-likelihoods of 
+the models (cfr. infra).
+
+## Likelihood and Log-Likelihood
+
+The likelihood is a probability that indicates how likely it is that the
+parameters take on particular values **given a particular sample**. As the
+sample is given, the values for the outcome and predictor are not variables. The
+parameter values are the variables. We can represent the likelihood function as
+follows:
+
+$$
+L(\theta | (x_1, y_1), (x_2, y_2), ..., (x_n, y_n)) 
+= \prod_{i = 1}^{n} f_Y(y_i; x_i, \theta)
+$$
+
+with $\theta$ the parameters of interest, $n$ the sample size, and 
+$f_Y(y; x, \theta)$ the probability mass function for the response. Calculating 
+the likelihood involves taking the product of many probabilities (i.e., values 
+between 0 and 1), and therefore results in a very small value. For computational 
+reasons, often the log-likelihood is calculated instead of the likelihood.
+
+$$
+\begin{aligned}
+l(\theta | (x_1, y_1), (x_2, y_2), ..., (x_n, y_n)) 
+&= log[\prod_{i = 1}^{n} f_Y(y_i; x_i, \theta)] \\
+&= \sum_{i = 1}^{n} log(f_Y(y_i; x_i, \theta))
+\end{aligned}
+$$
+
+### Proposed Model
+
+We start by calculating the likelihood and log-likelihood of $M_p$. 
+
+$$
+L(\theta | (x_1, y_1), (x_2, y_2), ..., (x_n, y_n)) = \prod_{i = 1}^{n} f_Y(y_i; x_i, \theta)
+$$
+
+with $\theta$ representing the parameters that are the variables and $n$ the
+sample size. To define the likelihood function, we must first determine the
+probability mass function for the response. The PMF
+defines the probability distribution of a discrete random variable. Remember
+that a logistic regression model is used to predict the outcome for a discrete
+random variable, and more specifically a binary random variable that follows a
+Bernoulli distribution:
+
+$$
+HD \sim Bernoulli(\pi)
+$$
+
+The probability mass function (PMF) of a Bernoulli distribution is the
+following:
+
+$$
+f_Y(y; \pi) = \pi^{y} \times (1 - \pi)^{1 - y}
+$$
+
+Therefore, we use the PMF of the Bernoulli distribution for the likelihood 
+function:
+
+$$
+L(\theta | (x_1, y_1), (x_2, y_2), ..., (x_n, y_n)) 
+= \prod_{i = 1}^{n} \pi_{i}^{y_i} \times (1 - \pi_i)^{1 - y_i}
+$$
+
+with $\theta$ representing the regression coefficients of the logistic
+regression model. We can now also define the log-likelihood function:
+
+$$
+\begin{aligned}
+l(\theta | (x_1, y_1), (x_2, y_2), ..., (x_n, y_n)) 
+&= log[\prod_{i = 1}^{n} \pi_{i}^{y_i} \times (1 - \pi_i)^{1 - y_i}] \\
+&= \sum_{i = 1}^{n} [y_i \times log(\pi_i) + (1 - y_i) \times log(1 - \pi_i)]
+\end{aligned}
+$$
+
+Using our fitted model $M_p$, how can we now obtain the log-likelihood? We start
+by obtaining the estimated probability of observing the actual outcome for each
+observation in the data set. We focus on the third observation in the data set.
+We see that $Age_3 = 37$ and $HD_3 = 0$. We can use our model to obtain the 
+probability of a heart disease:
+
+```{r}
+# Estimate the probability of a heart disease for i = 3
+hd_prob_003 <- predict(fit_p, type = "response")[3]
+hd_prob_003
+```
+
+We see that this probability is 
+$P(HD_3 = 1 | Age_i = 37) = \pi_i = `r round(hd_prob_003, 2)`$. Assume that 
+our sample only comprises this one patient, then the likelihood would be:
+
+$$
+\begin{aligned}
+L(\theta | (Age_i, HD_i)) 
+&= \prod_{i = 1}^{n} f_Y(y_i; x_i, \theta) \\
+&= \prod_{i = 1}^{n} \pi_{i}^{y_i} \times (1 - \pi_i)^{1 - y_i} \\
+&= 0.3105577^{0} \times (1 - 0.3105577)^{1 - 0} \\
+&= 1 \times 0.6894423^{1} \\
+&= 0.6894423
+\end{aligned}
+$$
+
+So, to calculate the likelihood, first, we calculate the estimated probability 
+with which the actual outcome occurs.
+
+```{r}
+# Create a copy of the data frame as to not overwrite the original data
+heart_p <- heart
+
+# Calculate the probability of a patient having or not having a heart disease 
+# using the proposed model (i.e., given the patient's age)
+heart_p$EstProb_HD_1 <- predict(fit_p, type = "response")
+heart_p$EstProb_HD_0 <- 1 - predict(fit_p, type = "response")
+
+heart_p <- heart_p %>%
+  dplyr::mutate(
+    ProbOutcome = EstProb_HD_1^HeartDisease * EstProb_HD_0^(1 - HeartDisease),
+    LogProbOutcome = log(ProbOutcome)
+  )
+```
+
+```{r echo = FALSE}
+cols <- c(
+  "Age",
+  "HeartDisease",
+  "EstProb_HD_1",
+  "EstProb_HD_0",
+  "ProbOutcome",
+  "LogProbOutcome"
+)
+col_names <- c(
+  "Age",
+  "Heart Disease",
+  "P(HD = 1)",
+  "P(HD = 0)",
+  "P(Outcome)",
+  "Log(P(Outcome))"
+)
+
+knitr::kable(x = heart_p[cols], col.names = col_names)
+```
+
+The above data show, given the fitted model, the probability with which each
+actual outcome occurs, given the patient's age, and also the log-transformed
+probability. To obtain the log-likelihood of the fitted model $LL_p$, we can now
+just sum these log-transformed probabilities:
+
+```{r}
+# Obtain the log-likelihood for the proposed model
+ll_p <- sum(heart_p$LogProbOutcome)
+ll_p
+```
+
+### Null Model
+
+We can also do this for the null model. Remember that the fitted probability 
+of a heart disease will be the same for each patient, as we do not take into 
+account any patient information. We can then compute the log-likelihood of the 
+null model as follows:
+
+```{r}
+# Create a copy of the data frame as to not overwrite the original data
+heart_0 <- heart
+
+# Calculate the probability of a patient having or not having a heart disease 
+# using the null model (i.e., not taking into account any patient information)
+heart_0$EstProb_HD_1 <- predict(fit_0, type = "response")
+heart_0$EstProb_HD_0 <- 1 - predict(fit_0, type = "response")
+
+heart_0 <- heart_0 %>%
+  dplyr::mutate(
+    ProbOutcome = EstProb_HD_1^HeartDisease * EstProb_HD_0^(1 - HeartDisease),
+    LogProbOutcome = log(ProbOutcome)
+  )
+```
+
+```{r echo = FALSE}
+knitr::kable(x = heart_0[cols], col.names = col_names)
+```
+
+We obtain the log-likelihood of the null model $LL_0$ as follows:
+
+```{r}
+ll_0 <- sum(heart_0$LogProbOutcome)
+ll_0
+```
+
+### Saturated Model
+
+We can follow the same procedure for $M_s$. The saturated model perfectly fits 
+the data, so the estimated probability of heart disease reflects the actual 
+outcome. In other words, if $HD_i = 1$, then $P(HD_i = 1) = 1$. And if 
+$HD_i = 0$, then $P(HD_i = 1) = 0$.
+
+```{r}
+# Create a new data set with the estimated probabilities using the null model
+heart_s <- heart
+
+heart_s <- heart_0 %>%
+  dplyr::mutate(ProbOutcome = 1, LogProbOutcome = log(ProbOutcome))
+```
+
+```{r echo = FALSE}
+cols <- c(
+  "Age",
+  "HeartDisease",
+  "ProbOutcome",
+  "LogProbOutcome"
+)
+col_names <- c(
+  "Age",
+  "Heart Disease",
+  "P(Outcome)",
+  "Log(P(Outcome))"
+)
+
+knitr::kable(x = heart_s[cols], col.names = col_names)
+```
+
+Finally, we obtain the log-likelihood for the saturated model $LL_s$:
+
+```{r}
+ll_s <- sum(heart_s$LogProbOutcome)
+ll_s
+```
+
+## Deviance
+
+Now that we have $LL_p$, $LL_0$, and $LL_s$, we can calculate the null and 
+residual deviance as follows:
+
+$$
+\begin{aligned}
+D_p &= 2 \times (LL_s - LL_p) \\
+&= 2 \times (0 - (-13.18263)) \\
+&= 2 \times 13.18263 \\
+&= 26.36526
+\end{aligned}
+$$
+
+and:
+
+$$
+\begin{aligned}
+D_0 &= 2 \times (LL_s - LL_0) \\
+&= 2 \times (0 - (-13.46023)) \\
+&= 2 \times 13.46023 \\
+&= 26.92047
+\end{aligned}
+$$
