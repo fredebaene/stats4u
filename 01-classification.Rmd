@@ -1,0 +1,214 @@
+# Classification
+
+```{r echo = FALSE}
+library(tidyverse)
+```
+
+Classification problems occur in settings where the response $Y$ is qualitative
+instead of quantitative. The set of possible values for the response $Y$ is
+limited in size. Furthermore, if the response $Y$ can only take on one out of
+two possible values, then the response $Y$ is binary.
+
+## Introduction
+
+For this chapter, we will use the **Heart Failure Prediction** data set.
+
+```{r}
+heart <- readr::read_csv(
+  file = "data/heart.xls",
+  show_col_types = FALSE
+)
+```
+
+This data set comprises $n = `r nrow(heart)`$ observations. The response 
+$HeartDisease$ codes for the presence of heart disease in a patient. This 
+variables is an indicator variable.
+
+## Logistic Regression Model
+
+For this data set, we are interested in modeling the probability of a heart 
+disease given the cholesterol level. The response variable $Y$ is an indicator 
+variable that indicates if a person has a heart disease ($Y = 1$) or not 
+($Y = 0$).
+
+A logistic regression model does not directly model the probability of having a 
+heart disease, but it models the log odds of having a heart disease:
+
+$$
+log(\frac{\pi}{1 - \pi}) = logit(\pi).
+$$
+
+The logistic regression model is:
+
+$$
+logit(\pi) = log(\frac{\pi}{1 - \pi}) = \beta_0 + \beta_1 \times x_i
+$$
+
+We can now fit a model as follows:
+
+```{r}
+# Fit a logistic regression model to the data
+fit_lrm <- glm(
+  formula = HeartDisease ~ Cholesterol,
+  data = heart,
+  family = binomial(link = "logit")
+)
+```
+
+```{r echo = FALSE}
+summary(fit_lrm)
+```
+
+Fitting a logistic model gives us the estimates
+
+### Bernoulli Random Variable
+
+A binary response variable $Y$ can be considered a Bernoulli random variable. A 
+Bernoulli random variable captures the outcome of a Bernoulli trial, which is a 
+random experiment with only two possible outcomes, i.e., success or failure.
+
+The probability distribution of a Bernoulli random variable is called a 
+Bernoulli distribution. The probability mass function of this distribution only 
+uses one parameter, i.e., $\pi$ the probability of a success in a single trial.
+
+If we look at the heart data set, then we can estimate $\pi$ as the probability 
+of a heart disease occurring.
+
+```{r}
+# Estimate the probability of a heart disease
+hd_prob <- mean(heart[["HeartDisease"]])
+```
+
+We obtain an estimate of $\hat{\pi} = `r round(hd_prob, 2)`$. Using this data 
+set, we estimate that the probability of heart disease occurring in a single 
+person is approximately `r round(hd_prob*100, 2)`%. So, in this case, we have 
+$P(Y = 1) = `r round(hd_prob, 2)`$.
+
+However, suppose that we do not believe the probability of having a heart
+disease is the same for each individual. This probability can differ based on
+certain factors. We could try and model the probability of a heart disease as a
+function of the cholesterol level of that person. We are trying to estimate the
+conditional probability of a heart disease (conditioning on cholesterol level):
+$P(Y = 1 | Cholesterol)$.
+
+## Logistic Regression
+
+We can fit a logistic regression model to the data. This logistic model can 
+be used to estimate the conditional probability of a heart disease given a 
+certain cholesterol level.
+
+
+
+
+
+## Simple Linear Regression
+
+We can try to model the probability of a heart disease directly as a function 
+of the cholesterol level of a person. Using a simple linear regression model, 
+we would then have the following:
+
+$$
+HeartDisease_i = \beta_0 + \beta_1 \times Cholesterol_i + \epsilon_i
+$$
+
+with $\epsilon_i \sim N(0, \sigma^2)$. We can derive the response function:
+
+$$
+\begin{aligned}
+E(HeartDisease_i) 
+&= E(\beta_0 + \beta_1 \times Cholesterol_i + \epsilon_i) \\
+&= E(\beta_0) + E(\beta_1 \times Cholesterol_i) + E(\epsilon_i) \\
+&= \beta_0 + \beta_1 \times Cholesterol_i
+\end{aligned}
+$$
+
+However, remember that we also can consider $HeartDisease$ as a Bernoulli 
+random variable. This gives us the following:
+
+$$
+\begin{aligned}
+E(HeartDisease) 
+&= \sum hd \times P(HeartDisease = hd) \\
+&= 0 \times (1 - \pi) + 1 \times \pi \\
+&= \pi
+\end{aligned}
+$$
+
+We can now use this to interpret the response function:
+
+$$
+E(HeartDisease_i) 
+= \beta_0 + \beta_1 \times Choleseterol_i 
+= \pi_i
+$$
+
+In other words, the response function gives us the probability of a heart
+disease for the $i$'th individual given the cholesterol level. If we would fit a
+simple linear regression model to the data, we would obtain the following
+estimates
+
+```{r}
+# Fit a simple linear regression model
+fit_slr <- glm(formula = HeartDisease ~ Cholesterol, data = heart)
+```
+
+```{r echo = FALSE}
+summary(fit_slr)
+```
+
+Although this may seem as a reasonable approach, there are a few problems.
+Because the response function estimates the conditional probability of a heart
+disease, this implies the following constraint on the response function:
+
+$$
+0 \leq E(HeartDisease_i) = Pr(HeartDisease_i = 1 | Cholesterol_i) \leq 1
+$$
+
+Let us make this more tangible. Using this data set, we can estimate the 
+probability of a heart disease $Pr(HeartDisease_i = 1)$. We did this previously 
+and obtained an estimate of $\hat{\pi} = `r round(hd_prob, 2)`$. However, now, 
+we are interested in the probability of a heart disease for people with a 
+cholesterol level of 160, i.e., we are interested in 
+$Pr(HeartDisease_i = 1 | Cholesterol_i = 160)$. Again, we can use the data 
+set:
+
+```{r}
+# Calculate the conditional probability of a heart disease when the cholesterol
+# level equals 160
+hd_chol_160 <- heart %>%
+  dplyr::filter(Cholesterol == 160) %>%
+  dplyr::pull(HeartDisease)
+
+hd_prob_chol_160 <- mean(hd_chol_160)
+```
+
+We now have $Pr(HeartDisease_i = 1 | Cholesterol_i = 160) = `r round(hd_prob_chol_160, 2)`$.
+We now have a more fine-grained probability of a heart disease. We can also use 
+the model we just fitted to obtain this conditional probability:
+
+```{r}
+# Estimate the probability of heart disease for certain cholesterol levels
+B0 <- fit_slr$coefficients[1]
+B1 <- fit_slr$coefficients[2]
+
+hd_prob_chol_160_fit <- B0 + B1 * 160
+```
+
+We now have $Pr(HeartDisease_i = 1 | Cholesterol_i = 160) = `r round(hd_prob_chol_160_fit, 2)`$.
+The difference between the observed conditional probability and fitted 
+conditional probability is big. However, the fitted conditional probability is 
+not impossible. However, if we go outside of the scope of the model, we obtain 
+the following conditional probability:
+
+```{r}
+B0 + B1 * 800
+```
+
+We obtain a conditional probability of a heart disease less than 0, i.e., an 
+impossible conditional probability.
+
+This shows that a simple linear regression model fit to a data set with a 
+binary response variable can give us a probability of a success greater than 1 
+or less than 0, which is impossible. Furthermore, fitting a simple linear 
+regression model to such a data set also violates the assumptions of normal 
+errors and constant variance.
