@@ -10,3 +10,7 @@ proposed-model-1
 null-model-1
 saturated-model-1
 deviance
+validation
+validation-set-approach
+variability-of-mse
+training-set-size
