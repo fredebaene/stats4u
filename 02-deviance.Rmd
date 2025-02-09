@@ -1,23 +1,23 @@
 # Logistic Models and Deviance
 
-When fitting a logistic regression model to a data set with a binary response, R
-outputs, among others, a **null deviance** and **residual deviance**, and
-their respective degrees of freedom. Have you ever wondered what these values
-mean and how they are obtained? And how can we actually use these values to
-assess the goodness of fit of our model?
+When fitting a logistic regression model to a data set, R outputs several key
+metrics, including the **null deviance** and the **residual deviance**, along
+with their respective degrees of freedom. This chapter aims to clarify the
+calculation methods and meaning of these deviance values. We will use the first
+20 observations from a heart disease data set, fit a logistic regression model
+to this data, and manually compute the deviance values to illustrate how they
+are actually calculated.
 
-In this chapter, we will fit a logistic regression model to a heart failure 
-data set and explore the results to answer these questions.
-
-```{r echo = FALSE}
+```{r}
+# Read the data and only retain the first 20 observations
 heart <- readr::read_csv(file = "data/heart.xls", show_col_types = FALSE)
 heart <- head(heart, 20)
 ```
 
 ## Models
 
-To understand what deviance is, we must first understand the following three
-models:
+To understand what these deviance values are, we must first understand the
+following three models:
 
 * the **null** model ($M_0$),
 * the **proposed** model ($M_p$),
@@ -29,16 +29,16 @@ deviance of $M_p$).
 
 ### Proposed Model
 
-The proposed model $M_p$ is the model of interest. In our example, it is the
-model that is used to estimate the probability of heart disease for each patient
-conditioning on that patient's age. The model is represented as follows:
+The proposed model $M_p$ is the model of interest. In our example, it is used to
+estimate the probability of heart disease for each patient, conditioning on that
+patient's age. The model is represented as follows:
 
 $$
 logit(\pi_i) = \beta_0 + \beta_1 \times Age_i + \epsilon_i
 $$
 
 with $\pi_i = P(HD_i = 1 | Age_i)$ the conditional probability of a heart
-disease for patient $i$, $Age_i$ the age patient $i$, and $\epsilon_i$ the
+disease for patient $i$, $Age_i$ the age of patient $i$, and $\epsilon_i$ the
 random error of the model for the $i$'th observation. We can fit the proposed
 model as follows:
 
@@ -54,9 +54,8 @@ fit_p <- glm(
 summary(fit_p)
 ```
 
-Note that R outputs the null deviance $D_0$ and the residual deviance $D_p$,
-which are $D_0 = `r round(fit_p$null.deviance, 1)`$ and 
-$D_p = `r round(fit_p$deviance, 1)`$.
+We obtain the null deviance $D_0 = `r round(fit_p$null.deviance, 1)`$ and the
+residual deviance $D_p = `r round(fit_p$deviance, 1)`$.
 
 ### Null Model
 
@@ -67,8 +66,8 @@ $$
 logit(\pi_i) = \beta_0 + \epsilon_i
 $$
 
-We can see that the fitted probability of heart disease will be the same for 
-every patient in the data set. We can fit a null model to the data as follows:
+The estimated probability of heart disease is the same for each patient. The 
+null model $M_0$ is fitted as follows:
 
 ```{r}
 fit_0 <- glm(
@@ -78,36 +77,33 @@ fit_0 <- glm(
 )
 ```
 
-which gives us:
-
 ```{r echo = FALSE}
 summary(fit_0)
 ```
 
-Again, note that R outputs $D_0$ and $D_p$. The deviance values are the same 
-because, in this case, the proposed model $M_p$ equals the null model $M_0$. 
-Therefore, the null deviance $D_0 = `r round(fit_0$null.deviance, 1)`$ equals
-the residual deviance $D_p = `r round(fit_0$deviance, 1)`$.
+R outputs the null deviance $D_0$ and the residual deviance $D_p$, which both 
+equal `r round(fit_0$null.deviance, 1)`. They are the same because $M_p$ is the 
+same as $M_0$ (neither of them contains a predictor, only an intercept).
 
 ### Saturated Model
 
-A saturated model is a model that perfectly fits data. The estimated probability
-of a heart disease will match the outcome for each patient. If patient $i$ has a
-heart disease ($HD_i = 1$), then $\hat{\pi_i} = 1$. If patient $i$ does not have
-a heart disease ($HD_i = 0$), then $\hat{\pi_i} = 0$. We will not fit a 
-saturated model $M_s$ as such to the data, but continue our explanation knowing 
+The saturated model $M_s$ is a model that perfectly fits data. This model
+perfectly predicts the outcome for each patient in the data set. If patient $i$
+has a heart disease ($HD_i = 1$), then $\hat{\pi_i} = 1$. If patient $i$ does
+not have a heart disease ($HD_i = 0$), then $\hat{\pi_i} = 0$. We will not fit a
+saturated model $M_s$ as such to the data, but continue our explanation knowing
 the fact that the model perfectly predicts the outcome for each observation $i$.
 
 ### Models and Deviance
 
-Because the saturated model $M_s$ perfectly fits the data, we will use $M_s$ as 
-our reference point for **goodness-of-fit**. The proposed model $M_p$ and null 
-model $M_0$ are compared to the saturated model in terms of goodness-of-fit. The 
-result of these comparisons is a deviance for each comparison. The deviance is 
-thus a measure that quantifies to what degree the null model and residual model 
-differ (deviate) from the saturated model in terms of goodness-of-fit. To 
-calculate the actual deviance, we use the likelihoods and log-likelihoods of 
-the models (cfr. infra).
+Since the saturated model $M_s$ perfectly fits the data, it serves as our
+reference point for assessing goodness-of-fit. The proposed model $M_p$ and the
+null model $M_0$ are compared to the saturated model in terms of their
+goodness-of-fit. The result of these comparisons is a deviance value for each
+model. The deviance quantifies the degree to which the null model and the
+proposed model deviate from the saturated model in terms of goodness-of-fit. To
+calculate the actual deviance, we utilize the likelihoods and log-likelihoods of
+the models (see below for further details).
 
 ## Likelihood and Log-Likelihood
 
@@ -302,27 +298,22 @@ outcome. In other words, if $HD_i = 1$, then $P(HD_i = 1) = 1$. And if
 $HD_i = 0$, then $P(HD_i = 1) = 0$.
 
 ```{r}
-# Create a new data set with the estimated probabilities using the null model
+# Create a copy of the data frame as to not overwrite the original data
 heart_s <- heart
 
-heart_s <- heart_0 %>%
-  dplyr::mutate(ProbOutcome = 1, LogProbOutcome = log(ProbOutcome))
+# Calculate the probability of a patient having or not having a heart disease 
+# using the saturated model (i.e., the model perfectly fits the data)
+heart_s$EstProb_HD_1 <- heart_s$HeartDisease
+heart_s$EstProb_HD_0 <- 1 - heart_s$HeartDisease
+
+heart_s <- heart_s %>%
+  dplyr::mutate(
+    ProbOutcome = EstProb_HD_1^HeartDisease * EstProb_HD_0^(1 - HeartDisease),
+    LogProbOutcome = log(ProbOutcome)
+  )
 ```
 
 ```{r echo = FALSE}
-cols <- c(
-  "Age",
-  "HeartDisease",
-  "ProbOutcome",
-  "LogProbOutcome"
-)
-col_names <- c(
-  "Age",
-  "Heart Disease",
-  "P(Outcome)",
-  "Log(P(Outcome))"
-)
-
 knitr::kable(x = heart_s[cols], col.names = col_names)
 ```
 
@@ -335,8 +326,10 @@ ll_s
 
 ## Deviance
 
-Now that we have $LL_p$, $LL_0$, and $LL_s$, we can calculate the null and 
-residual deviance as follows:
+As stated earlier, the saturated model $M_s$ perfectly fits the data, and 
+therefore serves as our reference point for goodness-of-fit. We now use the 
+log-likelihood values of these models to calculate the deviance. For the 
+residual deviance $D_p$, we have:
 
 $$
 \begin{aligned}
@@ -347,7 +340,7 @@ D_p &= 2 \times (LL_s - LL_p) \\
 \end{aligned}
 $$
 
-and:
+and for the null deviance $D_0$, we have:
 
 $$
 \begin{aligned}
@@ -357,3 +350,13 @@ D_0 &= 2 \times (LL_s - LL_0) \\
 &= 26.92047
 \end{aligned}
 $$
+
+As we can see, the deviance is two times the difference between the
+log-likelihood of the saturated model and the log-likelihood of the proposed
+model for the residual deviance or the log-likelihood of the null model for the
+null deviance. The deviance quantifies how much the null and proposed models
+differ from the saturated model in terms of goodness-of-fit.
+
+In a following chapter, we will explain how we can use these deviance value to 
+perform statistical hypothesis tests to formally compare the proposed model to 
+the null model.
