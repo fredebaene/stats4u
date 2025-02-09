@@ -1,5 +1,9 @@
 # Logistic Models and Deviance
 
+```{r echo = FALSE}
+library(tidyverse)
+```
+
 When fitting a logistic regression model to a data set, R outputs several key
 metrics, including the **null deviance** and the **residual deviance**, along
 with their respective degrees of freedom. This chapter aims to clarify the
