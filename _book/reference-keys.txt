@@ -1,9 +1,4 @@
 about
-classification
-introduction
-bernoulli-random-variable
-conditional-probabilities
-logistic-regression-model
 logistic-models-and-deviance
 models
 proposed-model
