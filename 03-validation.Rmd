@@ -1,6 +1,7 @@
 # Validation
 
 ```{r echo = FALSE}
+library(boot)
 library(ggplot2)
 ```
 
@@ -166,6 +167,10 @@ fitting the model. But now, we will gradually increase the size of the training
 set and investigate how the size of the training set impacts the variability 
 (uncertainty) of the test error estimates.
 
+Furthermore, the less observations are used to fit the model, the worse the 
+performance. Therefore, the validation set approach tends to overestimate the 
+test error if the training set is small.
+
 ```{r}
 # Initialize a seed for reproducibility
 set.seed(123)
@@ -205,6 +210,8 @@ for (trn_size in trn_sizes) {
     
   }
   
+  mean_test_error <- mean(test_errors)
+  print(paste0("Mean test error : ", round(mean_test_error, 2)))
   test_error_range <- max(test_errors) - min(test_errors)
   print(paste0("Range : ", round(test_error_range, 2)))
   hist(
@@ -216,5 +223,69 @@ for (trn_size in trn_sizes) {
   
 }
 ```
+
+## Leave-One-Out Cross-Validation
+
+Leave-on-out cross-validation (LOOCV) also splits the complete data set into a 
+training set and a test set. The test set, however, comprises a single 
+observation. Furthermore, each observation is used once as a test observation. 
+This approach yields $n$ squared errors. Averaging these $n$ squared errors 
+then gives us the LOOCV estimate of the test error.
+
+$$
+CV_{(n)} = \frac{1}{n} \sum_{i = 1}^{n} MSE_i
+$$
+
+First, we manually calculate the LOOCV estimate of the test error.
+
+```{r}
+# Initialize a vector to hold the errors for each observation, that is each time 
+# is used as a test observation
+prd_errors <- rep(NA, times = n)
+
+for (i in 1:n) {
+  
+  fit <- glm(formula = brain_weight ~ head_volume, data = brains[-i, ])
+  prd_brain_weight <- predict(fit, brains[i, ])
+  obs_brain_weight <- brains[[i, "brain_weight"]]
+  prd_errors[i] <- (obs_brain_weight - prd_brain_weight)
+  
+}
+
+loocv_estimate <- mean(loocv_errors**2)
+loocv_estimate
+```
+
+We obtain an estimate of `r round(loocv_estimate, 2)` for the test error. We 
+can also just use the `boot` library to calculate the test error.
+
+```{r}
+# Fit a model to the complete data set
+fit <- glm(
+  formula = brain_weight ~ head_volume,
+  data = brains
+)
+
+# Calculate the LOOCV test error estimate using the boot library
+loocv_error <- cv.glm(brains, fit_loo)$delta[1]
+loocv_error
+```
+
+### Variability of MSE
+
+THERE IS NO LONGER ANY VARIABILITY IN THE LOOCV ESTIMATES
+
+IT WILL ALWAYS BE THE SAME (THERE IS NO RANDOMNESS)
+
+### Training Set Size
+
+THE TRAINING SET IS LARGER AS COMPARED TO THE VALIDATION SET APPROACH
+
+THE TEST ERROR WILL NOT BE AS OVERESTIMATED AS COMPARED TO THE VALIDATION SET APPROACH
+
+
+
+
+
 
 

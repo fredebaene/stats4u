@@ -26,7 +26,7 @@ probability.</p>" />
 <meta name="author" content="Frederick De Baene" />
 
 
-<meta name="date" content="2025-02-09" />
+<meta name="date" content="2025-02-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -168,6 +168,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="3.1.1" data-path="validation.html"><a href="validation.html#variability-of-mse"><i class="fa fa-check"></i><b>3.1.1</b> Variability of MSE</a></li>
 <li class="chapter" data-level="3.1.2" data-path="validation.html"><a href="validation.html#training-set-size"><i class="fa fa-check"></i><b>3.1.2</b> Training Set Size</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="validation.html"><a href="validation.html#leave-one-out-cross-validation"><i class="fa fa-check"></i><b>3.2</b> Leave-One-Out Cross-Validation</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="validation.html"><a href="validation.html#variability-of-mse-1"><i class="fa fa-check"></i><b>3.2.1</b> Variability of MSE</a></li>
+<li class="chapter" data-level="3.2.2" data-path="validation.html"><a href="validation.html#training-set-size-1"><i class="fa fa-check"></i><b>3.2.2</b> Training Set Size</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -318,7 +323,7 @@ set of observations into a training set and a test set and compute the MSE.</p>
 <span id="cb9-24"><a href="validation.html#cb9-24" tabindex="-1"></a>  test_errors[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(prd_errors<span class="sc">**</span><span class="dv">2</span>)</span>
 <span id="cb9-25"><a href="validation.html#cb9-25" tabindex="-1"></a>  </span>
 <span id="cb9-26"><a href="validation.html#cb9-26" tabindex="-1"></a>}</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>We see that there is quite some variability in the test error estimates, where
 they range from 2176.14 to
 8905.89. This is a serious drawback of the validation
@@ -333,6 +338,9 @@ model. We illustrate this by, again, repeatedly creating training sets and
 fitting the model. But now, we will gradually increase the size of the training
 set and investigate how the size of the training set impacts the variability
 (uncertainty) of the test error estimates.</p>
+<p>Furthermore, the less observations are used to fit the model, the worse the
+performance. Therefore, the validation set approach tends to overestimate the
+test error if the training set is small.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="validation.html#cb10-1" tabindex="-1"></a><span class="co"># Initialize a seed for reproducibility</span></span>
 <span id="cb10-2"><a href="validation.html#cb10-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb10-3"><a href="validation.html#cb10-3" tabindex="-1"></a></span>
@@ -371,34 +379,95 @@ set and investigate how the size of the training set impacts the variability
 <span id="cb10-36"><a href="validation.html#cb10-36" tabindex="-1"></a>    </span>
 <span id="cb10-37"><a href="validation.html#cb10-37" tabindex="-1"></a>  }</span>
 <span id="cb10-38"><a href="validation.html#cb10-38" tabindex="-1"></a>  </span>
-<span id="cb10-39"><a href="validation.html#cb10-39" tabindex="-1"></a>  test_error_range <span class="ot">&lt;-</span> <span class="fu">max</span>(test_errors) <span class="sc">-</span> <span class="fu">min</span>(test_errors)</span>
-<span id="cb10-40"><a href="validation.html#cb10-40" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;Range : &quot;</span>, <span class="fu">round</span>(test_error_range, <span class="dv">2</span>)))</span>
-<span id="cb10-41"><a href="validation.html#cb10-41" tabindex="-1"></a>  <span class="fu">hist</span>(</span>
-<span id="cb10-42"><a href="validation.html#cb10-42" tabindex="-1"></a>    test_errors,</span>
-<span id="cb10-43"><a href="validation.html#cb10-43" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">&quot;Distribution of Test Error Estimates (&quot;</span>, trn_size, <span class="st">&quot;)&quot;</span>),</span>
-<span id="cb10-44"><a href="validation.html#cb10-44" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Test error estimate&quot;</span>,</span>
-<span id="cb10-45"><a href="validation.html#cb10-45" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Count&quot;</span></span>
-<span id="cb10-46"><a href="validation.html#cb10-46" tabindex="-1"></a>  )</span>
-<span id="cb10-47"><a href="validation.html#cb10-47" tabindex="-1"></a>  </span>
-<span id="cb10-48"><a href="validation.html#cb10-48" tabindex="-1"></a>}</span></code></pre></div>
-<pre><code>## [1] &quot;Range : 10166.31&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 5161.19&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-2.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 2912.03&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-3.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 2952.36&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-4.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 2104.9&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-5.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 1806.83&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-6.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 1757.41&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-7.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 957.38&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-8.png" width="672" /></p>
-<pre><code>## [1] &quot;Range : 690.75&quot;</code></pre>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-9.png" width="672" /></p>
+<span id="cb10-39"><a href="validation.html#cb10-39" tabindex="-1"></a>  mean_test_error <span class="ot">&lt;-</span> <span class="fu">mean</span>(test_errors)</span>
+<span id="cb10-40"><a href="validation.html#cb10-40" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;Mean test error : &quot;</span>, <span class="fu">round</span>(mean_test_error, <span class="dv">2</span>)))</span>
+<span id="cb10-41"><a href="validation.html#cb10-41" tabindex="-1"></a>  test_error_range <span class="ot">&lt;-</span> <span class="fu">max</span>(test_errors) <span class="sc">-</span> <span class="fu">min</span>(test_errors)</span>
+<span id="cb10-42"><a href="validation.html#cb10-42" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;Range : &quot;</span>, <span class="fu">round</span>(test_error_range, <span class="dv">2</span>)))</span>
+<span id="cb10-43"><a href="validation.html#cb10-43" tabindex="-1"></a>  <span class="fu">hist</span>(</span>
+<span id="cb10-44"><a href="validation.html#cb10-44" tabindex="-1"></a>    test_errors,</span>
+<span id="cb10-45"><a href="validation.html#cb10-45" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">&quot;Distribution of Test Error Estimates (&quot;</span>, trn_size, <span class="st">&quot;)&quot;</span>),</span>
+<span id="cb10-46"><a href="validation.html#cb10-46" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Test error estimate&quot;</span>,</span>
+<span id="cb10-47"><a href="validation.html#cb10-47" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Count&quot;</span></span>
+<span id="cb10-48"><a href="validation.html#cb10-48" tabindex="-1"></a>  )</span>
+<span id="cb10-49"><a href="validation.html#cb10-49" tabindex="-1"></a>  </span>
+<span id="cb10-50"><a href="validation.html#cb10-50" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] &quot;Mean test error : 6101.64&quot;
+## [1] &quot;Range : 10166.31&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5693.02&quot;
+## [1] &quot;Range : 5161.19&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5595.77&quot;
+## [1] &quot;Range : 2912.03&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-3.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5532.75&quot;
+## [1] &quot;Range : 2952.36&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-4.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5490.38&quot;
+## [1] &quot;Range : 2104.9&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-5.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5460.82&quot;
+## [1] &quot;Range : 1806.83&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-6.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5441.94&quot;
+## [1] &quot;Range : 1757.41&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-7.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5429.91&quot;
+## [1] &quot;Range : 957.38&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-8.png" width="672" /></p>
+<pre><code>## [1] &quot;Mean test error : 5420.85&quot;
+## [1] &quot;Range : 690.75&quot;</code></pre>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-9.png" width="672" /></p>
+</div>
+</div>
+<div id="leave-one-out-cross-validation" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Leave-One-Out Cross-Validation<a href="validation.html#leave-one-out-cross-validation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Leave-on-out cross-validation (LOOCV) also splits the complete data set into a
+training set and a test set. The test set, however, comprises a single
+observation. Furthermore, each observation is used once as a test observation.
+This approach yields <span class="math inline">\(n\)</span> squared errors. Averaging these <span class="math inline">\(n\)</span> squared errors
+then gives us the LOOCV estimate of the test error.</p>
+<p><span class="math display">\[
+CV_{(n)} = \frac{1}{n} \sum_{i = 1}^{n} MSE_i
+\]</span></p>
+<p>First, we manually calculate the LOOCV estimate of the test error.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="validation.html#cb20-1" tabindex="-1"></a><span class="co"># Initialize a vector to hold the errors for each observation, that is each time </span></span>
+<span id="cb20-2"><a href="validation.html#cb20-2" tabindex="-1"></a><span class="co"># is used as a test observation</span></span>
+<span id="cb20-3"><a href="validation.html#cb20-3" tabindex="-1"></a>prd_errors <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n)</span>
+<span id="cb20-4"><a href="validation.html#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="validation.html#cb20-5" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n) {</span>
+<span id="cb20-6"><a href="validation.html#cb20-6" tabindex="-1"></a>  </span>
+<span id="cb20-7"><a href="validation.html#cb20-7" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> brain_weight <span class="sc">~</span> head_volume, <span class="at">data =</span> brains[<span class="sc">-</span>i, ])</span>
+<span id="cb20-8"><a href="validation.html#cb20-8" tabindex="-1"></a>  prd_brain_weight <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, brains[i, ])</span>
+<span id="cb20-9"><a href="validation.html#cb20-9" tabindex="-1"></a>  obs_brain_weight <span class="ot">&lt;-</span> brains[[i, <span class="st">&quot;brain_weight&quot;</span>]]</span>
+<span id="cb20-10"><a href="validation.html#cb20-10" tabindex="-1"></a>  prd_errors[i] <span class="ot">&lt;-</span> (obs_brain_weight <span class="sc">-</span> prd_brain_weight)</span>
+<span id="cb20-11"><a href="validation.html#cb20-11" tabindex="-1"></a>  </span>
+<span id="cb20-12"><a href="validation.html#cb20-12" tabindex="-1"></a>}</span>
+<span id="cb20-13"><a href="validation.html#cb20-13" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="validation.html#cb20-14" tabindex="-1"></a>loocv_estimate <span class="ot">&lt;-</span> <span class="fu">mean</span>(loocv_errors<span class="sc">**</span><span class="dv">2</span>)</span>
+<span id="cb20-15"><a href="validation.html#cb20-15" tabindex="-1"></a>loocv_estimate</span></code></pre></div>
+<pre><code>## [1] 5293.103</code></pre>
+<p>We obtain an estimate of 5293.1 for the test error. We
+can also just use the <code>boot</code> library to calculate the test error.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="validation.html#cb22-1" tabindex="-1"></a><span class="co"># Fit a model to the complete data set</span></span>
+<span id="cb22-2"><a href="validation.html#cb22-2" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb22-3"><a href="validation.html#cb22-3" tabindex="-1"></a>  <span class="at">formula =</span> brain_weight <span class="sc">~</span> head_volume,</span>
+<span id="cb22-4"><a href="validation.html#cb22-4" tabindex="-1"></a>  <span class="at">data =</span> brains</span>
+<span id="cb22-5"><a href="validation.html#cb22-5" tabindex="-1"></a>)</span>
+<span id="cb22-6"><a href="validation.html#cb22-6" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="validation.html#cb22-7" tabindex="-1"></a><span class="co"># Calculate the LOOCV test error estimate using the boot library</span></span>
+<span id="cb22-8"><a href="validation.html#cb22-8" tabindex="-1"></a>loocv_error <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(brains, fit_loo)<span class="sc">$</span>delta[<span class="dv">1</span>]</span>
+<span id="cb22-9"><a href="validation.html#cb22-9" tabindex="-1"></a>loocv_error</span></code></pre></div>
+<pre><code>## [1] 5293.103</code></pre>
+<div id="variability-of-mse-1" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Variability of MSE<a href="validation.html#variability-of-mse-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>THERE IS NO LONGER ANY VARIABILITY IN THE LOOCV ESTIMATES</p>
+<p>IT WILL ALWAYS BE THE SAME (THERE IS NO RANDOMNESS)</p>
+</div>
+<div id="training-set-size-1" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Training Set Size<a href="validation.html#training-set-size-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>THE TRAINING SET IS LARGER AS COMPARED TO THE VALIDATION SET APPROACH</p>
+<p>THE TEST ERROR WILL NOT BE AS OVERESTIMATED AS COMPARED TO THE VALIDATION SET APPROACH</p>
 
 </div>
 </div>
