@@ -10,10 +10,10 @@ proposed-model-1
 null-model-1
 saturated-model-1
 deviance
-validation
-validation-set-approach
-variability-of-mse
-training-set-size
-leave-one-out-cross-validation
-variability-of-mse-1
-training-set-size-1
+missingness
+introduction
+missingess-patterns
+simulation-setup
+missingness-completely-at-random
+missingness-at-random
+missingness-not-at-random

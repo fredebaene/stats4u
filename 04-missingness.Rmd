@@ -13,7 +13,7 @@ missingness patterns (missingness mechanisms):
 * missingness not at random (MNAR).
 
 In the following sections, we will use a simulated data set containing data on 
-patients and their weights to illustrate these different mechanisms.
+patients and their weight and BMI to illustrate these different mechanisms.
 
 ## Missingess Patterns
 
@@ -47,7 +47,6 @@ $$
 # Simulate patient data. The data set contains 10000 observations, and is 
 # balanced in terms of sex.
 set.seed(123)
-
 n <- 10000
 
 # Define the parameters that define the distribution of weight and BMI
@@ -65,7 +64,7 @@ weights <- tibble::tibble(
     rnorm(n / 2, mu_weight_f, sd_weight),
     rnorm(n / 2, mu_weight_m, sd_weight)
   ),
-  bmi = rnorm(n, mu_bmi, sd_bmi)
+  bmi = round(rnorm(n, mu_bmi, sd_bmi), 1)
 )
 ```
 
@@ -144,11 +143,11 @@ p_missing_m <- 0.25
 idxs <- c(
   sample(
     x = weights[weights$sex == "F", "idx", drop = T],
-    size = n * p_missing_f
+    size = (n / 2) * p_missing_f
   ),
   sample(
     x = weights[weights$sex == "M", "idx", drop = T],
-    size = n * p_missing_m
+    size = (n / 2) * p_missing_m
   )
 )
 weights["mar"] <- weights$idx %in% idxs
@@ -230,16 +229,14 @@ overweight and obese patients. Based on BMI, we can classify patients as:
 * underweight: $BMI < 18.5$
 * normal: $18.5 \leq BMI \leq 24.9$
 * overweight: $25 \leq BMI \leq 29.9$
-* obese: $30 < BMI$.
+* obese: $30 \leq BMI$.
 
 We assume the following conditional probabilities of missingness:
 
 ```{r}
 # Define conditional probabilities of missingness
-p_missing_uw <- 0.95 # underweight
-p_missing_nw <- 0.85 # normal weight
-p_missing_ow <- 0.75 # overweight
-p_missing_ob <- 0.65 # obese
+p_missing_uw_nw <- 0.75 # underweight and normal weight
+p_missing_ow_ob <- 0.55 # overweight and obese
 ```
 
 ```{r}
@@ -247,10 +244,10 @@ p_missing_ob <- 0.65 # obese
 weights <- weights %>%
   dplyr::mutate(
     bmi_class = dplyr::case_when(
-      bmi <= 18.5 ~ "uw",
-      dplyr::between(bmi, 18.5, 25.0) ~ "nw",
+      bmi < 18.5 ~ "uw",
+      dplyr::between(bmi, 18.5, 24.9) ~ "nw",
       dplyr::between(bmi, 25.0, 29.9) ~ "ow",
-      bmi >= 29.9 ~ "ob"
+      bmi >= 30.0 ~ "ob"
     )
   )
 ```
@@ -265,24 +262,16 @@ names(fd_bmi_classes) <- fd_bmi_classes_df$bmi_class
 ```
 
 ```{r}
-set.seed(123)
+set.seed(456)
 
 idxs <- c(
   sample(
-    x = weights[weights$bmi_class == "uw",, drop = F]$idx,
-    size = round(fd_bmi_classes["uw"] * p_missing_uw)
+    x = weights[weights$bmi_class %in% c("uw", "nw"), "idx", drop = T],
+    size = round((fd_bmi_classes["uw"] + fd_bmi_classes["nw"]) * p_missing_uw_nw)
   ),
   sample(
-    x = weights[weights$bmi_class == "nw",, drop = F]$idx,
-    size = round(fd_bmi_classes["nw"] * p_missing_nw)
-  ),
-  sample(
-    x = weights[weights$bmi_class == "ow",, drop = F]$idx,
-    size = round(fd_bmi_classes["ow"] * p_missing_ow)
-  ),
-  sample(
-    x = weights[weights$bmi_class == "ob",, drop = F]$idx,
-    size = round(fd_bmi_classes["ob"] * p_missing_ob)
+    x = weights[weights$bmi_class %in% c("ow", "ob"), "idx", drop = T],
+    size = round((fd_bmi_classes["ow"] + fd_bmi_classes["ob"]) * p_missing_ow_ob)
   )
 )
 weights["mnar"] <- weights$idx %in% idxs
@@ -319,24 +308,6 @@ ggplot(weights, aes(x = bmi)) +
   theme_bw() +
   labs(
     title = "Distribution of BMI Conditional on Sex and Missingness (MNAR)",
-    x = "Weight (kg)", y = "Count"
-  ) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
-
-Again, we see that, for each sex, the distribution of missing values is shifted
-to the left compared to the distribution of observed values. This follows from
-the fact that sex does not affect the probability of missingness. However, if we
-condition on the BMI class (in other words, on the outcome itself), we see that
-the difference between the distributions disappears.
-
-```{r echo = FALSE}
-ggplot(weights, aes(x = bmi)) +
-  geom_histogram(bins = 50) +
-  facet_grid(rows = vars(mnar), cols = vars(bmi_class)) +
-  theme_bw() +
-  labs(
-    title = "Distribution of BMI Conditional on BMI and Missingness (MNAR)",
     x = "Weight (kg)", y = "Count"
   ) +
   theme(plot.title = element_text(hjust = 0.5))

@@ -26,7 +26,7 @@ probability.</p>" />
 <meta name="author" content="Frederick De Baene" />
 
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-03-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,7 @@ probability.</p>" />
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="validation.html"/>
+<link rel="next" href="missingness.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -162,14 +162,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#deviance"><i class="fa fa-check"></i><b>2.3</b> Deviance</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>3</b> Validation</a>
+<li class="chapter" data-level="3" data-path="missingness.html"><a href="missingness.html"><i class="fa fa-check"></i><b>3</b> Missingness</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="validation.html"><a href="validation.html#validation-set-approach"><i class="fa fa-check"></i><b>3.1</b> Validation Set Approach</a>
+<li class="chapter" data-level="3.1" data-path="missingness.html"><a href="missingness.html#introduction"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="missingness.html"><a href="missingness.html#missingess-patterns"><i class="fa fa-check"></i><b>3.2</b> Missingess Patterns</a>
 <ul>
-<li class="chapter" data-level="3.1.1" data-path="validation.html"><a href="validation.html#variability-of-mse"><i class="fa fa-check"></i><b>3.1.1</b> Variability of MSE</a></li>
-<li class="chapter" data-level="3.1.2" data-path="validation.html"><a href="validation.html#training-set-size"><i class="fa fa-check"></i><b>3.1.2</b> Training Set Size</a></li>
+<li class="chapter" data-level="3.2.1" data-path="missingness.html"><a href="missingness.html#simulation-setup"><i class="fa fa-check"></i><b>3.2.1</b> Simulation Setup</a></li>
+<li class="chapter" data-level="3.2.2" data-path="missingness.html"><a href="missingness.html#missingness-completely-at-random"><i class="fa fa-check"></i><b>3.2.2</b> Missingness Completely at Random</a></li>
+<li class="chapter" data-level="3.2.3" data-path="missingness.html"><a href="missingness.html#missingness-at-random"><i class="fa fa-check"></i><b>3.2.3</b> Missingness at Random</a></li>
+<li class="chapter" data-level="3.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>3.2.4</b> Missingness Not at Random</a></li>
 </ul></li>
-<li class="chapter" data-level="3.2" data-path="validation.html"><a href="validation.html#leave-one-out-cross-validation"><i class="fa fa-check"></i><b>3.2</b> Leave-One-Out Cross-Validation</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -193,15 +195,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="logistic-models-and-deviance" class="section level1 hasAnchor" number="2">
 <h1><span class="header-section-number">2</span> Logistic Models and Deviance<a href="logistic-models-and-deviance.html#logistic-models-and-deviance" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ lubridate 1.9.4     ✔ tibble    3.2.1
-## ✔ purrr     1.0.2     ✔ tidyr     1.3.1
-## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <p>When fitting a logistic regression model to a data set, R outputs several key
 metrics, including the <strong>null deviance</strong> and the <strong>residual deviance</strong>, along
 with their respective degrees of freedom. This chapter aims to clarify the
@@ -209,9 +202,9 @@ calculation methods and meaning of these deviance values. We will use the first
 20 observations from a heart disease data set, fit a logistic regression model
 to this data, and manually compute the deviance values to illustrate how they
 are actually calculated.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="logistic-models-and-deviance.html#cb2-1" tabindex="-1"></a><span class="co"># Read the data and only retain the first 20 observations</span></span>
-<span id="cb2-2"><a href="logistic-models-and-deviance.html#cb2-2" tabindex="-1"></a>heart <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/heart.xls&quot;</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb2-3"><a href="logistic-models-and-deviance.html#cb2-3" tabindex="-1"></a>heart <span class="ot">&lt;-</span> <span class="fu">head</span>(heart, <span class="dv">20</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="logistic-models-and-deviance.html#cb1-1" tabindex="-1"></a><span class="co"># Read the data and only retain the first 20 observations</span></span>
+<span id="cb1-2"><a href="logistic-models-and-deviance.html#cb1-2" tabindex="-1"></a>heart <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">&quot;data/heart.xls&quot;</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="logistic-models-and-deviance.html#cb1-3" tabindex="-1"></a>heart <span class="ot">&lt;-</span> <span class="fu">head</span>(heart, <span class="dv">20</span>)</span></code></pre></div>
 <div id="models" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Models<a href="logistic-models-and-deviance.html#models" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>To understand what these deviance values are, we must first understand the
@@ -236,11 +229,11 @@ logit(\pi_i) = \beta_0 + \beta_1 \times Age_i + \epsilon_i
 disease for patient <span class="math inline">\(i\)</span>, <span class="math inline">\(Age_i\)</span> the age of patient <span class="math inline">\(i\)</span>, and <span class="math inline">\(\epsilon_i\)</span> the
 random error of the model for the <span class="math inline">\(i\)</span>’th observation. We can fit the proposed
 model as follows:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="logistic-models-and-deviance.html#cb3-1" tabindex="-1"></a>fit_p <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb3-2"><a href="logistic-models-and-deviance.html#cb3-2" tabindex="-1"></a>  <span class="at">formula =</span> HeartDisease <span class="sc">~</span> Age,</span>
-<span id="cb3-3"><a href="logistic-models-and-deviance.html#cb3-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
-<span id="cb3-4"><a href="logistic-models-and-deviance.html#cb3-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
-<span id="cb3-5"><a href="logistic-models-and-deviance.html#cb3-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="logistic-models-and-deviance.html#cb2-1" tabindex="-1"></a>fit_p <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb2-2"><a href="logistic-models-and-deviance.html#cb2-2" tabindex="-1"></a>  <span class="at">formula =</span> HeartDisease <span class="sc">~</span> Age,</span>
+<span id="cb2-3"><a href="logistic-models-and-deviance.html#cb2-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
+<span id="cb2-4"><a href="logistic-models-and-deviance.html#cb2-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
+<span id="cb2-5"><a href="logistic-models-and-deviance.html#cb2-5" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = HeartDisease ~ Age, family = binomial(link = &quot;logit&quot;), 
@@ -270,11 +263,11 @@ logit(\pi_i) = \beta_0 + \epsilon_i
 \]</span></p>
 <p>The estimated probability of heart disease is the same for each patient. The
 null model <span class="math inline">\(M_0\)</span> is fitted as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="logistic-models-and-deviance.html#cb5-1" tabindex="-1"></a>fit_0 <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb5-2"><a href="logistic-models-and-deviance.html#cb5-2" tabindex="-1"></a>  <span class="at">formula =</span> HeartDisease <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb5-3"><a href="logistic-models-and-deviance.html#cb5-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
-<span id="cb5-4"><a href="logistic-models-and-deviance.html#cb5-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
-<span id="cb5-5"><a href="logistic-models-and-deviance.html#cb5-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="logistic-models-and-deviance.html#cb4-1" tabindex="-1"></a>fit_0 <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb4-2"><a href="logistic-models-and-deviance.html#cb4-2" tabindex="-1"></a>  <span class="at">formula =</span> HeartDisease <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb4-3"><a href="logistic-models-and-deviance.html#cb4-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
+<span id="cb4-4"><a href="logistic-models-and-deviance.html#cb4-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
+<span id="cb4-5"><a href="logistic-models-and-deviance.html#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = HeartDisease ~ 1, family = binomial(link = &quot;logit&quot;), 
@@ -380,9 +373,9 @@ by obtaining the estimated probability of observing the actual outcome for each
 observation in the data set. We focus on the third observation in the data set.
 We see that <span class="math inline">\(Age_3 = 37\)</span> and <span class="math inline">\(HD_3 = 0\)</span>. We can use our model to obtain the
 probability of a heart disease:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="logistic-models-and-deviance.html#cb7-1" tabindex="-1"></a><span class="co"># Estimate the probability of a heart disease for i = 3</span></span>
-<span id="cb7-2"><a href="logistic-models-and-deviance.html#cb7-2" tabindex="-1"></a>hd_prob_003 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)[<span class="dv">3</span>]</span>
-<span id="cb7-3"><a href="logistic-models-and-deviance.html#cb7-3" tabindex="-1"></a>hd_prob_003</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="logistic-models-and-deviance.html#cb6-1" tabindex="-1"></a><span class="co"># Estimate the probability of a heart disease for i = 3</span></span>
+<span id="cb6-2"><a href="logistic-models-and-deviance.html#cb6-2" tabindex="-1"></a>hd_prob_003 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)[<span class="dv">3</span>]</span>
+<span id="cb6-3"><a href="logistic-models-and-deviance.html#cb6-3" tabindex="-1"></a>hd_prob_003</span></code></pre></div>
 <pre><code>##         3 
 ## 0.3105577</code></pre>
 <p>We see that this probability is
@@ -400,19 +393,19 @@ L(\theta | (Age_i, HD_i))
 \]</span></p>
 <p>So, to calculate the likelihood, first, we calculate the estimated probability
 with which the actual outcome occurs.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="logistic-models-and-deviance.html#cb9-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
-<span id="cb9-2"><a href="logistic-models-and-deviance.html#cb9-2" tabindex="-1"></a>heart_p <span class="ot">&lt;-</span> heart</span>
-<span id="cb9-3"><a href="logistic-models-and-deviance.html#cb9-3" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="logistic-models-and-deviance.html#cb9-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
-<span id="cb9-5"><a href="logistic-models-and-deviance.html#cb9-5" tabindex="-1"></a><span class="co"># using the proposed model (i.e., given the patient&#39;s age)</span></span>
-<span id="cb9-6"><a href="logistic-models-and-deviance.html#cb9-6" tabindex="-1"></a>heart_p<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb9-7"><a href="logistic-models-and-deviance.html#cb9-7" tabindex="-1"></a>heart_p<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb9-8"><a href="logistic-models-and-deviance.html#cb9-8" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="logistic-models-and-deviance.html#cb9-9" tabindex="-1"></a>heart_p <span class="ot">&lt;-</span> heart_p <span class="sc">%&gt;%</span></span>
-<span id="cb9-10"><a href="logistic-models-and-deviance.html#cb9-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb9-11"><a href="logistic-models-and-deviance.html#cb9-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
-<span id="cb9-12"><a href="logistic-models-and-deviance.html#cb9-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
-<span id="cb9-13"><a href="logistic-models-and-deviance.html#cb9-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="logistic-models-and-deviance.html#cb8-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
+<span id="cb8-2"><a href="logistic-models-and-deviance.html#cb8-2" tabindex="-1"></a>heart_p <span class="ot">&lt;-</span> heart</span>
+<span id="cb8-3"><a href="logistic-models-and-deviance.html#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="logistic-models-and-deviance.html#cb8-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
+<span id="cb8-5"><a href="logistic-models-and-deviance.html#cb8-5" tabindex="-1"></a><span class="co"># using the proposed model (i.e., given the patient&#39;s age)</span></span>
+<span id="cb8-6"><a href="logistic-models-and-deviance.html#cb8-6" tabindex="-1"></a>heart_p<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb8-7"><a href="logistic-models-and-deviance.html#cb8-7" tabindex="-1"></a>heart_p<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(fit_p, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb8-8"><a href="logistic-models-and-deviance.html#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="logistic-models-and-deviance.html#cb8-9" tabindex="-1"></a>heart_p <span class="ot">&lt;-</span> heart_p <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="logistic-models-and-deviance.html#cb8-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb8-11"><a href="logistic-models-and-deviance.html#cb8-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
+<span id="cb8-12"><a href="logistic-models-and-deviance.html#cb8-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
+<span id="cb8-13"><a href="logistic-models-and-deviance.html#cb8-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -591,9 +584,9 @@ with which the actual outcome occurs.</p>
 actual outcome occurs, given the patient’s age, and also the log-transformed
 probability. To obtain the log-likelihood of the fitted model <span class="math inline">\(LL_p\)</span>, we can now
 just sum these log-transformed probabilities:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="logistic-models-and-deviance.html#cb10-1" tabindex="-1"></a><span class="co"># Obtain the log-likelihood for the proposed model</span></span>
-<span id="cb10-2"><a href="logistic-models-and-deviance.html#cb10-2" tabindex="-1"></a>ll_p <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_p<span class="sc">$</span>LogProbOutcome)</span>
-<span id="cb10-3"><a href="logistic-models-and-deviance.html#cb10-3" tabindex="-1"></a>ll_p</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="logistic-models-and-deviance.html#cb9-1" tabindex="-1"></a><span class="co"># Obtain the log-likelihood for the proposed model</span></span>
+<span id="cb9-2"><a href="logistic-models-and-deviance.html#cb9-2" tabindex="-1"></a>ll_p <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_p<span class="sc">$</span>LogProbOutcome)</span>
+<span id="cb9-3"><a href="logistic-models-and-deviance.html#cb9-3" tabindex="-1"></a>ll_p</span></code></pre></div>
 <pre><code>## [1] -13.18263</code></pre>
 </div>
 <div id="null-model-1" class="section level3 hasAnchor" number="2.2.2">
@@ -602,19 +595,19 @@ just sum these log-transformed probabilities:</p>
 of a heart disease will be the same for each patient, as we do not take into
 account any patient information. We can then compute the log-likelihood of the
 null model as follows:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="logistic-models-and-deviance.html#cb12-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
-<span id="cb12-2"><a href="logistic-models-and-deviance.html#cb12-2" tabindex="-1"></a>heart_0 <span class="ot">&lt;-</span> heart</span>
-<span id="cb12-3"><a href="logistic-models-and-deviance.html#cb12-3" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="logistic-models-and-deviance.html#cb12-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
-<span id="cb12-5"><a href="logistic-models-and-deviance.html#cb12-5" tabindex="-1"></a><span class="co"># using the null model (i.e., not taking into account any patient information)</span></span>
-<span id="cb12-6"><a href="logistic-models-and-deviance.html#cb12-6" tabindex="-1"></a>heart_0<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_0, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb12-7"><a href="logistic-models-and-deviance.html#cb12-7" tabindex="-1"></a>heart_0<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(fit_0, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb12-8"><a href="logistic-models-and-deviance.html#cb12-8" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="logistic-models-and-deviance.html#cb12-9" tabindex="-1"></a>heart_0 <span class="ot">&lt;-</span> heart_0 <span class="sc">%&gt;%</span></span>
-<span id="cb12-10"><a href="logistic-models-and-deviance.html#cb12-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb12-11"><a href="logistic-models-and-deviance.html#cb12-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
-<span id="cb12-12"><a href="logistic-models-and-deviance.html#cb12-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
-<span id="cb12-13"><a href="logistic-models-and-deviance.html#cb12-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="logistic-models-and-deviance.html#cb11-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
+<span id="cb11-2"><a href="logistic-models-and-deviance.html#cb11-2" tabindex="-1"></a>heart_0 <span class="ot">&lt;-</span> heart</span>
+<span id="cb11-3"><a href="logistic-models-and-deviance.html#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="logistic-models-and-deviance.html#cb11-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
+<span id="cb11-5"><a href="logistic-models-and-deviance.html#cb11-5" tabindex="-1"></a><span class="co"># using the null model (i.e., not taking into account any patient information)</span></span>
+<span id="cb11-6"><a href="logistic-models-and-deviance.html#cb11-6" tabindex="-1"></a>heart_0<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_0, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb11-7"><a href="logistic-models-and-deviance.html#cb11-7" tabindex="-1"></a>heart_0<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">predict</span>(fit_0, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb11-8"><a href="logistic-models-and-deviance.html#cb11-8" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="logistic-models-and-deviance.html#cb11-9" tabindex="-1"></a>heart_0 <span class="ot">&lt;-</span> heart_0 <span class="sc">%&gt;%</span></span>
+<span id="cb11-10"><a href="logistic-models-and-deviance.html#cb11-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb11-11"><a href="logistic-models-and-deviance.html#cb11-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
+<span id="cb11-12"><a href="logistic-models-and-deviance.html#cb11-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
+<span id="cb11-13"><a href="logistic-models-and-deviance.html#cb11-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -790,8 +783,8 @@ null model as follows:</p>
 </tbody>
 </table>
 <p>We obtain the log-likelihood of the null model <span class="math inline">\(LL_0\)</span> as follows:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="logistic-models-and-deviance.html#cb13-1" tabindex="-1"></a>ll_0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_0<span class="sc">$</span>LogProbOutcome)</span>
-<span id="cb13-2"><a href="logistic-models-and-deviance.html#cb13-2" tabindex="-1"></a>ll_0</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="logistic-models-and-deviance.html#cb12-1" tabindex="-1"></a>ll_0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_0<span class="sc">$</span>LogProbOutcome)</span>
+<span id="cb12-2"><a href="logistic-models-and-deviance.html#cb12-2" tabindex="-1"></a>ll_0</span></code></pre></div>
 <pre><code>## [1] -13.46023</code></pre>
 </div>
 <div id="saturated-model-1" class="section level3 hasAnchor" number="2.2.3">
@@ -800,19 +793,19 @@ null model as follows:</p>
 the data, so the estimated probability of heart disease reflects the actual
 outcome. In other words, if <span class="math inline">\(HD_i = 1\)</span>, then <span class="math inline">\(P(HD_i = 1) = 1\)</span>. And if
 <span class="math inline">\(HD_i = 0\)</span>, then <span class="math inline">\(P(HD_i = 1) = 0\)</span>.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="logistic-models-and-deviance.html#cb15-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
-<span id="cb15-2"><a href="logistic-models-and-deviance.html#cb15-2" tabindex="-1"></a>heart_s <span class="ot">&lt;-</span> heart</span>
-<span id="cb15-3"><a href="logistic-models-and-deviance.html#cb15-3" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="logistic-models-and-deviance.html#cb15-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
-<span id="cb15-5"><a href="logistic-models-and-deviance.html#cb15-5" tabindex="-1"></a><span class="co"># using the saturated model (i.e., the model perfectly fits the data)</span></span>
-<span id="cb15-6"><a href="logistic-models-and-deviance.html#cb15-6" tabindex="-1"></a>heart_s<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> heart_s<span class="sc">$</span>HeartDisease</span>
-<span id="cb15-7"><a href="logistic-models-and-deviance.html#cb15-7" tabindex="-1"></a>heart_s<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> heart_s<span class="sc">$</span>HeartDisease</span>
-<span id="cb15-8"><a href="logistic-models-and-deviance.html#cb15-8" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="logistic-models-and-deviance.html#cb15-9" tabindex="-1"></a>heart_s <span class="ot">&lt;-</span> heart_s <span class="sc">%&gt;%</span></span>
-<span id="cb15-10"><a href="logistic-models-and-deviance.html#cb15-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb15-11"><a href="logistic-models-and-deviance.html#cb15-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
-<span id="cb15-12"><a href="logistic-models-and-deviance.html#cb15-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
-<span id="cb15-13"><a href="logistic-models-and-deviance.html#cb15-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="logistic-models-and-deviance.html#cb14-1" tabindex="-1"></a><span class="co"># Create a copy of the data frame as to not overwrite the original data</span></span>
+<span id="cb14-2"><a href="logistic-models-and-deviance.html#cb14-2" tabindex="-1"></a>heart_s <span class="ot">&lt;-</span> heart</span>
+<span id="cb14-3"><a href="logistic-models-and-deviance.html#cb14-3" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="logistic-models-and-deviance.html#cb14-4" tabindex="-1"></a><span class="co"># Calculate the probability of a patient having or not having a heart disease </span></span>
+<span id="cb14-5"><a href="logistic-models-and-deviance.html#cb14-5" tabindex="-1"></a><span class="co"># using the saturated model (i.e., the model perfectly fits the data)</span></span>
+<span id="cb14-6"><a href="logistic-models-and-deviance.html#cb14-6" tabindex="-1"></a>heart_s<span class="sc">$</span>EstProb_HD_1 <span class="ot">&lt;-</span> heart_s<span class="sc">$</span>HeartDisease</span>
+<span id="cb14-7"><a href="logistic-models-and-deviance.html#cb14-7" tabindex="-1"></a>heart_s<span class="sc">$</span>EstProb_HD_0 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> heart_s<span class="sc">$</span>HeartDisease</span>
+<span id="cb14-8"><a href="logistic-models-and-deviance.html#cb14-8" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="logistic-models-and-deviance.html#cb14-9" tabindex="-1"></a>heart_s <span class="ot">&lt;-</span> heart_s <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="logistic-models-and-deviance.html#cb14-10" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb14-11"><a href="logistic-models-and-deviance.html#cb14-11" tabindex="-1"></a>    <span class="at">ProbOutcome =</span> EstProb_HD_1<span class="sc">^</span>HeartDisease <span class="sc">*</span> EstProb_HD_0<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> HeartDisease),</span>
+<span id="cb14-12"><a href="logistic-models-and-deviance.html#cb14-12" tabindex="-1"></a>    <span class="at">LogProbOutcome =</span> <span class="fu">log</span>(ProbOutcome)</span>
+<span id="cb14-13"><a href="logistic-models-and-deviance.html#cb14-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -988,8 +981,8 @@ outcome. In other words, if <span class="math inline">\(HD_i = 1\)</span>, then 
 </tbody>
 </table>
 <p>Finally, we obtain the log-likelihood for the saturated model <span class="math inline">\(LL_s\)</span>:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="logistic-models-and-deviance.html#cb16-1" tabindex="-1"></a>ll_s <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_s<span class="sc">$</span>LogProbOutcome)</span>
-<span id="cb16-2"><a href="logistic-models-and-deviance.html#cb16-2" tabindex="-1"></a>ll_s</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="logistic-models-and-deviance.html#cb15-1" tabindex="-1"></a>ll_s <span class="ot">&lt;-</span> <span class="fu">sum</span>(heart_s<span class="sc">$</span>LogProbOutcome)</span>
+<span id="cb15-2"><a href="logistic-models-and-deviance.html#cb15-2" tabindex="-1"></a>ll_s</span></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 </div>
 </div>
@@ -1033,7 +1026,7 @@ the null model.</p>
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="validation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="missingness.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

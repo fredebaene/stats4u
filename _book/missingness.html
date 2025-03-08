@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Missingness | Stats For You</title>
+  <meta name="description" content="<p>This book provides an introduction to various topics in statistics and
+probability.</p>" />
+  <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Missingness | Stats For You" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="<p>This book provides an introduction to various topics in statistics and
+probability.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Missingness | Stats For You" />
+  
+  <meta name="twitter:description" content="<p>This book provides an introduction to various topics in statistics and
+probability.</p>" />
+  
+
+<meta name="author" content="Frederick De Baene" />
+
+
+<meta name="date" content="2025-03-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="logistic-models-and-deviance.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Stats For You</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a></li>
+<li class="chapter" data-level="2" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html"><i class="fa fa-check"></i><b>2</b> Logistic Models and Deviance</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#models"><i class="fa fa-check"></i><b>2.1</b> Models</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#proposed-model"><i class="fa fa-check"></i><b>2.1.1</b> Proposed Model</a></li>
+<li class="chapter" data-level="2.1.2" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#null-model"><i class="fa fa-check"></i><b>2.1.2</b> Null Model</a></li>
+<li class="chapter" data-level="2.1.3" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#saturated-model"><i class="fa fa-check"></i><b>2.1.3</b> Saturated Model</a></li>
+<li class="chapter" data-level="2.1.4" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#models-and-deviance"><i class="fa fa-check"></i><b>2.1.4</b> Models and Deviance</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#likelihood-and-log-likelihood"><i class="fa fa-check"></i><b>2.2</b> Likelihood and Log-Likelihood</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#proposed-model-1"><i class="fa fa-check"></i><b>2.2.1</b> Proposed Model</a></li>
+<li class="chapter" data-level="2.2.2" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#null-model-1"><i class="fa fa-check"></i><b>2.2.2</b> Null Model</a></li>
+<li class="chapter" data-level="2.2.3" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#saturated-model-1"><i class="fa fa-check"></i><b>2.2.3</b> Saturated Model</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#deviance"><i class="fa fa-check"></i><b>2.3</b> Deviance</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="missingness.html"><a href="missingness.html"><i class="fa fa-check"></i><b>3</b> Missingness</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="missingness.html"><a href="missingness.html#introduction"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
+<li class="chapter" data-level="3.2" data-path="missingness.html"><a href="missingness.html#missingess-patterns"><i class="fa fa-check"></i><b>3.2</b> Missingess Patterns</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="missingness.html"><a href="missingness.html#simulation-setup"><i class="fa fa-check"></i><b>3.2.1</b> Simulation Setup</a></li>
+<li class="chapter" data-level="3.2.2" data-path="missingness.html"><a href="missingness.html#missingness-completely-at-random"><i class="fa fa-check"></i><b>3.2.2</b> Missingness Completely at Random</a></li>
+<li class="chapter" data-level="3.2.3" data-path="missingness.html"><a href="missingness.html#missingness-at-random"><i class="fa fa-check"></i><b>3.2.3</b> Missingness at Random</a></li>
+<li class="chapter" data-level="3.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>3.2.4</b> Missingness Not at Random</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Stats For You</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="missingness" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> Missingness<a href="missingness.html#missingness" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Introduction<a href="missingness.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When fitting models to a particular data set, missingness is of particular
+concern. Missing data can lead to biased coefficient estimates. Therefore, a
+good understanding of the different missingness patterns, their implications on
+model fitting, and how to deal with them is essential. There are three
+missingness patterns (missingness mechanisms):</p>
+<ul>
+<li>missingness completely at random (MCAR)</li>
+<li>missingness at random (MAR)</li>
+<li>missingness not at random (MNAR).</li>
+</ul>
+<p>In the following sections, we will use a simulated data set containing data on
+patients and their weight and BMI to illustrate these different mechanisms.</p>
+</div>
+<div id="missingess-patterns" class="section level2 hasAnchor" number="3.2">
+<h2><span class="header-section-number">3.2</span> Missingess Patterns<a href="missingness.html#missingess-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="simulation-setup" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Simulation Setup<a href="missingness.html#simulation-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Our simulation setup involves simulating the weight of patients visiting their
+general physician (GP) for a checkup. For each patient, the sex (male, female)
+is always recorded. The data set is balanced in terms of sex, and we assume a
+normally distributed weight (kg) with a mean weight <span class="math inline">\(\mu_{f} = 65\)</span> for women and
+<span class="math inline">\(\mu_{m} = 78\)</span> for men. The standard deviation <span class="math inline">\(\sigma = 10\)</span> is the same for
+both sexes:</p>
+<p><span class="math display">\[
+W_{f} \sim \mathcal{N}(65, 100)
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+W_{m} \sim \mathcal{N}(78, 100).
+\]</span></p>
+<p>We also simulate the BMI for these patients. We assume the BMI is normally
+distributed as follows:</p>
+<p><span class="math display">\[
+BMI \sim \mathcal{N}(25, 9).
+\]</span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="missingness.html#cb1-1" tabindex="-1"></a><span class="co"># Simulate patient data. The data set contains 10000 observations, and is </span></span>
+<span id="cb1-2"><a href="missingness.html#cb1-2" tabindex="-1"></a><span class="co"># balanced in terms of sex.</span></span>
+<span id="cb1-3"><a href="missingness.html#cb1-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-4"><a href="missingness.html#cb1-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb1-5"><a href="missingness.html#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="missingness.html#cb1-6" tabindex="-1"></a><span class="co"># Define the parameters that define the distribution of weight and BMI</span></span>
+<span id="cb1-7"><a href="missingness.html#cb1-7" tabindex="-1"></a>sd_bmi <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-8"><a href="missingness.html#cb1-8" tabindex="-1"></a>mu_bmi <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb1-9"><a href="missingness.html#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="missingness.html#cb1-10" tabindex="-1"></a>sd_weight <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb1-11"><a href="missingness.html#cb1-11" tabindex="-1"></a>mu_weight_f <span class="ot">&lt;-</span> <span class="dv">65</span></span>
+<span id="cb1-12"><a href="missingness.html#cb1-12" tabindex="-1"></a>mu_weight_m <span class="ot">&lt;-</span> <span class="dv">78</span></span>
+<span id="cb1-13"><a href="missingness.html#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="missingness.html#cb1-14" tabindex="-1"></a>weights <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb1-15"><a href="missingness.html#cb1-15" tabindex="-1"></a>  <span class="at">idx =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb1-16"><a href="missingness.html#cb1-16" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb1-17"><a href="missingness.html#cb1-17" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(</span>
+<span id="cb1-18"><a href="missingness.html#cb1-18" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_f, sd_weight),</span>
+<span id="cb1-19"><a href="missingness.html#cb1-19" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_m, sd_weight)</span>
+<span id="cb1-20"><a href="missingness.html#cb1-20" tabindex="-1"></a>  ),</span>
+<span id="cb1-21"><a href="missingness.html#cb1-21" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, mu_bmi, sd_bmi), <span class="dv">1</span>)</span>
+<span id="cb1-22"><a href="missingness.html#cb1-22" tabindex="-1"></a>)</span></code></pre></div>
+<p>We can see that the conditional distributions of weight given sex have different
+means.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>But the conditional distributions of BMI are the same.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="missingness-completely-at-random" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Missingness Completely at Random<a href="missingness.html#missingness-completely-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Missingness completely at random indicates that the observations with missing
+values are a random subset of all observations. There are no factors that affect
+the probability of missingness, nor is the probability of missingess affected by
+the outcome itself (weight or BMI). The distribution of observed and missing
+values is the same.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missingness.html#cb2-1" tabindex="-1"></a><span class="co"># Simulate MCAR: assume that 30% of observations have a missing outcome</span></span>
+<span id="cb2-2"><a href="missingness.html#cb2-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-3"><a href="missingness.html#cb2-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> n <span class="sc">*</span> <span class="fl">0.3</span>)</span>
+<span id="cb2-4"><a href="missingness.html#cb2-4" tabindex="-1"></a>weights[<span class="st">&quot;mcar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<p>Because the observations with missing values are a random subset of all
+observations, we should see no difference between the distributions of missing
+and observed values.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="missingness-at-random" class="section level3 hasAnchor" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Missingness at Random<a href="missingness.html#missingness-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>With missingness at random, we believe there are certain factors that affect the
+probability of missingness, and that these same factors also have an effect on
+the outcome. In our example, we see that sex affects the weight. We now assume
+that sex also affects the probability of missingness.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missingness.html#cb3-1" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
+<span id="cb3-2"><a href="missingness.html#cb3-2" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
+<span id="cb3-3"><a href="missingness.html#cb3-3" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb3-4"><a href="missingness.html#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="missingness.html#cb3-5" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-6"><a href="missingness.html#cb3-6" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb3-7"><a href="missingness.html#cb3-7" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb3-8"><a href="missingness.html#cb3-8" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_f</span>
+<span id="cb3-9"><a href="missingness.html#cb3-9" tabindex="-1"></a>  ),</span>
+<span id="cb3-10"><a href="missingness.html#cb3-10" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb3-11"><a href="missingness.html#cb3-11" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb3-12"><a href="missingness.html#cb3-12" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_m</span>
+<span id="cb3-13"><a href="missingness.html#cb3-13" tabindex="-1"></a>  )</span>
+<span id="cb3-14"><a href="missingness.html#cb3-14" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="missingness.html#cb3-15" tabindex="-1"></a>weights[<span class="st">&quot;mar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<p>Inspection of the distributions of observed and missing values shows us that the
+distribution of missing values is shifted to the left compared to the
+distribution of observed values.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Because the probability of missingness is higher for women then for men, the
+fraction of patients with a missing weight that are female is higher than the
+fraction of patients with a missing weight that are men. This affects the
+distribution of the missing weights, i.e., shifting the distribution to the
+left. Assume that sex is the only factor that affects the probability of
+missingness, then, conditional on sex, the distribution of observed values and
+missing values is the same.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>We can see that, conditional on sex, the distribution of observed and missing
+weights is the same. This illustrates the concept of missingness at random. Sex
+is the factor that influences both the probability of missingness and the
+outcome itself. Conditioning on this factors removes the difference in
+distributions of observed and missing weights.</p>
+<p>In practice, it is impossible to conclude missingness at random by comparing the
+distribution of observed and missing values as the missing values are, of
+course, missing. This example just demonstrates the concept of missingness at
+random.</p>
+</div>
+<div id="missingness-not-at-random" class="section level3 hasAnchor" number="3.2.4">
+<h3><span class="header-section-number">3.2.4</span> Missingness Not at Random<a href="missingness.html#missingness-not-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>With missingness not at random, the probability of missingness is not affected
+by a factor that is recorded, but is affected by factors that are not recorded
+or even by the outcome itself. For this missingness pattern, we will not focus
+on the weight of the patient but on the patient’s BMI. The distribution of BMI
+is the same for women and for men:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>However, we could argue the following: if a patient visits the GP, then the GP
+will more likely weigh the patient if he/she seems overweight or obese. We could
+make the same argument for underweight patients, but for the sake of
+illustration, we will assume the likelihood of being weighted is higher for
+overweight and obese patients. Based on BMI, we can classify patients as:</p>
+<ul>
+<li>underweight: <span class="math inline">\(BMI &lt; 18.5\)</span></li>
+<li>normal: <span class="math inline">\(18.5 \leq BMI \leq 24.9\)</span></li>
+<li>overweight: <span class="math inline">\(25 \leq BMI \leq 29.9\)</span></li>
+<li>obese: <span class="math inline">\(30 \leq BMI\)</span>.</li>
+</ul>
+<p>We assume the following conditional probabilities of missingness:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="missingness.html#cb4-1" tabindex="-1"></a><span class="co"># Define conditional probabilities of missingness</span></span>
+<span id="cb4-2"><a href="missingness.html#cb4-2" tabindex="-1"></a>p_missing_uw_nw <span class="ot">&lt;-</span> <span class="fl">0.75</span> <span class="co"># underweight and normal weight</span></span>
+<span id="cb4-3"><a href="missingness.html#cb4-3" tabindex="-1"></a>p_missing_ow_ob <span class="ot">&lt;-</span> <span class="fl">0.55</span> <span class="co"># overweight and obese</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="missingness.html#cb5-1" tabindex="-1"></a><span class="co"># Classify patients based on their BMI</span></span>
+<span id="cb5-2"><a href="missingness.html#cb5-2" tabindex="-1"></a>weights <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="missingness.html#cb5-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb5-4"><a href="missingness.html#cb5-4" tabindex="-1"></a>    <span class="at">bmi_class =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb5-5"><a href="missingness.html#cb5-5" tabindex="-1"></a>      bmi <span class="sc">&lt;</span> <span class="fl">18.5</span> <span class="sc">~</span> <span class="st">&quot;uw&quot;</span>,</span>
+<span id="cb5-6"><a href="missingness.html#cb5-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">18.5</span>, <span class="fl">24.9</span>) <span class="sc">~</span> <span class="st">&quot;nw&quot;</span>,</span>
+<span id="cb5-7"><a href="missingness.html#cb5-7" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">25.0</span>, <span class="fl">29.9</span>) <span class="sc">~</span> <span class="st">&quot;ow&quot;</span>,</span>
+<span id="cb5-8"><a href="missingness.html#cb5-8" tabindex="-1"></a>      bmi <span class="sc">&gt;=</span> <span class="fl">30.0</span> <span class="sc">~</span> <span class="st">&quot;ob&quot;</span></span>
+<span id="cb5-9"><a href="missingness.html#cb5-9" tabindex="-1"></a>    )</span>
+<span id="cb5-10"><a href="missingness.html#cb5-10" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="missingness.html#cb6-1" tabindex="-1"></a>fd_bmi_classes_df <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="missingness.html#cb6-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(bmi_class) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="missingness.html#cb6-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>())</span>
+<span id="cb6-4"><a href="missingness.html#cb6-4" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="missingness.html#cb6-5" tabindex="-1"></a>fd_bmi_classes <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>n</span>
+<span id="cb6-6"><a href="missingness.html#cb6-6" tabindex="-1"></a><span class="fu">names</span>(fd_bmi_classes) <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>bmi_class</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="missingness.html#cb7-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb7-2"><a href="missingness.html#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="missingness.html#cb7-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-4"><a href="missingness.html#cb7-4" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb7-5"><a href="missingness.html#cb7-5" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;uw&quot;</span>, <span class="st">&quot;nw&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb7-6"><a href="missingness.html#cb7-6" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;uw&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;nw&quot;</span>]) <span class="sc">*</span> p_missing_uw_nw)</span>
+<span id="cb7-7"><a href="missingness.html#cb7-7" tabindex="-1"></a>  ),</span>
+<span id="cb7-8"><a href="missingness.html#cb7-8" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb7-9"><a href="missingness.html#cb7-9" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ow&quot;</span>, <span class="st">&quot;ob&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb7-10"><a href="missingness.html#cb7-10" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;ow&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;ob&quot;</span>]) <span class="sc">*</span> p_missing_ow_ob)</span>
+<span id="cb7-11"><a href="missingness.html#cb7-11" tabindex="-1"></a>  )</span>
+<span id="cb7-12"><a href="missingness.html#cb7-12" tabindex="-1"></a>)</span>
+<span id="cb7-13"><a href="missingness.html#cb7-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<p>First, let’s have a look at the distribution of BMI conditional on missingness.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The distribution of the missing BMI values is shifted to the left compared to
+the distribution of the observed BMI values. This makes sense as the probability
+of the weight being recorded, and thus the BMI being calculated, is bigger as
+a patient tends to be overweight or obese.</p>
+<p>We know from our simulation that sex does not influence the probability of
+missigness, nor is there any other factor that influences the probability of
+missingness, only the outcome itself. Therefore, conditioning on sex, will not
+eliminate the difference in distribution between observed and missing values.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="logistic-models-and-deviance.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/04-missingness.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf", "_main.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
