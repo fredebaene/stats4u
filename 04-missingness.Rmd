@@ -312,3 +312,39 @@ ggplot(weights, aes(x = bmi)) +
   ) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
+
+## Missingness Methods
+
+We can calculate the mean weight for the population if we now the proportion of 
+men and women in the population. If it is $1/2$, then the population mean of 
+the weigth is:
+
+$$
+E(E(Weight | Sex)) = E(Weight | Sex = M) \times 0.5 + E(Weight | Sex = F) \times 0.5 = 71.5
+$$
+
+```{r}
+mean(weights$weight)
+```
+
+```{r}
+observed <- !weights$mar
+```
+
+```{r}
+X <- as.factor(weights$sex)
+```
+
+```{r}
+fit <- glm(formula = observed ~ X, family = "binomial")
+```
+
+```{r}
+ipw_f <- exp(fit$coefficients[1]) / (1 + exp(fit$coefficients[1]))
+ipw_m <- exp(fit$coefficients[2]) / (1 + exp(fit$coefficients[2]))
+```
+
+
+
+
+

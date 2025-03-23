@@ -17,3 +17,4 @@ simulation-setup
 missingness-completely-at-random
 missingness-at-random
 missingness-not-at-random
+missingness-methods
