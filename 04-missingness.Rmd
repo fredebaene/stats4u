@@ -1,5 +1,10 @@
 # Missingness
 
+```{r}
+library(mice)
+library(VIM)
+```
+
 ## Introduction
 
 When fitting models to a particular data set, missingness is of particular 
@@ -101,9 +106,10 @@ ggplot(weights, aes(x = bmi)) +
 
 Missingness completely at random indicates that the observations with missing
 values are a random subset of all observations. There are no factors that affect
-the probability of missingness, nor is the probability of missingess affected by
-the outcome itself (weight or BMI). The distribution of observed and missing
-values is the same.
+the probability of missingness, nor is the probability of missingness affected
+by the outcome itself (weight or BMI); the probability of missingness does not
+depend on observed nor unobserved variables. The distribution of observed and
+missing values is the same.
 
 ```{r}
 # Simulate MCAR: assume that 30% of observations have a missing outcome
@@ -313,38 +319,541 @@ ggplot(weights, aes(x = bmi)) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-## Missingness Methods
+## Handling Missing Data
 
-We can calculate the mean weight for the population if we now the proportion of 
-men and women in the population. If it is $1/2$, then the population mean of 
-the weigth is:
+```{r echo = FALSE}
+weights <-  dplyr::select(weights, -mcar, -mar, -mnar)
+```
+
+There are different approaches to handle missing data. They are not always
+suitable for every situation and have different drawbacks. In this section, we
+will go over the different approaches and discuss when to use them and their
+disadvantages. When going over these different approaches to handle missingness,
+it is important to consider bias and precision. We will come back to this.
+
+### Example Case
+
+To demonstrate the different approaches, we use the data set on the weights. The
+data set contains the weight for all students enrolled in a particular school. 
+The population mean for the weight can be calculated and is:
+
+```{r echo = FALSE}
+mu_weight <- mean(weights$weight)
+```
 
 $$
-E(E(Weight | Sex)) = E(Weight | Sex = M) \times 0.5 + E(Weight | Sex = F) \times 0.5 = 71.5
+\mathbb{E} [W] = `r round(mu_weight, 3)`
 $$
 
+If we want to estimate the population mean for weight, we can draw a random
+sample of 100 students and use the unbiased estimator, i.e., the sample average,
+to calculate an estimate for the mean weight. If we do this repeatedly, then the
+mean of the unbiased estimator approaches the population mean.
+
 ```{r}
-mean(weights$weight)
+# Ensure reproducibility
+set.seed(123)
+
+# Repeat the sampling 1000 times to obtain 1000 samples
+N <- 1000
+mean_weights <- rep(x = NA, times = N)
+
+for (i in 1:N) {
+  
+  # Draw a random sample of 100 students and calculate the sample mean
+  idxs <- sample(x = n, size = 100, replace = FALSE)
+  mean_weights[i] <- mean(weights$weight[idxs])
+
+}
+
+mean_estimator <- mean(mean_weights)
+se_estimator <- sd(mean_weights)
+```
+
+The mean of the sample means equals `r round(mean_estimator, 3)`, which is
+very close to the population mean of `r round(mu_weight, 3)`. The following
+figure illustrates that the expectation of the estimator is close to the
+population parameter value. Furthermore, the precision of the estimator can be
+gauged from this figure.
+
+```{r echo = FALSE}
+ggplot(tibble::tibble(mean_weight = mean_weights), aes(x = mean_weight)) +
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept = mu_weight, color = "blue") +
+  geom_vline(xintercept = mean(mean_weights), color = "red") +
+  theme_bw() +
+  labs(
+    title = "Distribution of Sample Means",
+    x = "Mean Weight (kg)", y = "Count",
+    subtitle = "Blue: Population mean | Red: Mean of sample means"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+To calculate the precision, we will calculate the standard error empirically
+as the standard deviation of the sample means, which then equals
+`r round(se_estimator, 3)`.
+
+```{r}
+# Read the lifestyle data
+lifestyle <- readr::read_csv(
+  file = fs::path(fs::path_wd(), "data", "lifestyle.csv"),
+  show_col_types = FALSE,
+)
+
+# Select the variables
+lifestyle <- lifestyle %>%
+  dplyr::select(
+    age = Age,
+    sex = Gender,
+    weight = `Weight (kg)`,
+    height = `Height (m)`,
+  )
+
+# Randomly select 1000 observations
+set.seed(789)
+idxs <- sample(x = nrow(lifestyle), size = 1000, replace = FALSE)
+lifestyle <- lifestyle[idxs,, drop = FALSE]
+lifestyle_original <- lifestyle
+
+# Replace observed values with missing values
+set.seed(456)
+idxs <- sample(x = nrow(lifestyle), size = 100, replace = FALSE)
+lifestyle$weight[idxs] <- NA
+
+idxs <- sample(x = nrow(lifestyle), size = 150, replace = FALSE)
+lifestyle$height[idxs] <- NA
+
+# Cast the sex to a factor
+lifestyle$sex <- as.factor(lifestyle$sex)
+```
+
+
+### Complete Case Analysis
+
+Complete case analysis only uses those observations without missing values. If
+there is MCAR, then estimates are unbiased but the precision will not be as good
+because less data is being used. We can illustrate this.
+
+```{r}
+# Ensure reproducibility
+set.seed(123)
+
+# Repeat the sampling 1000 times to obtain 1000 samples
+N <- 1000
+mean_weights <- rep(x = NA, times = N)
+
+for (i in 1:N) {
+  
+  # Draw a random sample of 100 students
+  idxs <- sample(x = n, size = 100, replace = FALSE)
+  student_sample <- weights[idxs,]
+  
+  # Simulate MCAR: the observations in the sample with missing data are a random
+  # subset of the sample
+  idxs <- sample(x = student_sample$idx, size = 30)
+  student_sample$missing <- student_sample$idx %in% idxs
+  
+  # Calculate the sample mean
+  mean_weights[i] <- mean(student_sample[student_sample$missing == FALSE,]$weight)
+
+}
+
+mean_estimator <- mean(mean_weights)
+se_estimator <- sd(mean_weights)
+```
+
+We see that the expectation of the estimator $\mathbb{E} [W] = `r round(mean_estimator, 3)`$
+is still very close to the population mean `r round(mu_weight, 3)`, but the
+precision is not as good, equaling `r round(se_estimator, 3)`.
+
+With MAR, estimates are no longer unbiased. Because the probability of
+missingness depends on one or more observed variables. Again, we can illustrate
+this.
+
+```{r}
+# Ensure reproducibility
+set.seed(123)
+
+# Repeat the sampling 1000 times to obtain 1000 samples
+N <- 1000
+mean_weights <- rep(x = NA, times = N)
+
+# Determine the conditional probabilities of missingness
+p_missing_f <- 0.45
+p_missing_m <- 0.25
+
+for (i in 1:N) {
+  
+  # Draw a random sample of 100 students
+  idxs <- sample(x = n, size = 100, replace = FALSE)
+  student_sample <- weights[idxs,]
+  
+  # Simulate MCAR: the observations in the sample with missing data are a random
+  # subset of the sample
+  idxs <- c(
+    sample(
+      x = student_sample[student_sample$sex == "F", "idx", drop = T],
+      size = round(nrow(student_sample[student_sample$sex == "F",]) * p_missing_f)
+    ),
+    sample(
+      x = student_sample[student_sample$sex == "M", "idx", drop = T],
+      size = round(nrow(student_sample[student_sample$sex == "M",]) * p_missing_m)
+    )
+  )
+  student_sample$missing <- student_sample$idx %in% idxs
+  
+  # Calculate the sample mean
+  mean_weights[i] <- mean(student_sample[student_sample$missing == FALSE,]$weight)
+
+}
+
+mean_estimator <- mean(mean_weights)
+se_estimator <- sd(mean_weights)
+```
+
+We now see that the expectation of the estimator
+$\mathbb{E} [W] = `r round(mean_estimator, 3)`$ is not as close to the
+population mean as seen previously. Furthermore, the empirical standard error
+of `r round(se_estimator, 3)` is again larger. The population comprises male and
+female students. The weight of the male students follows the following
+distribution:
+
+$$
+W_{m} \sim \mathcal{N}(78, 100)
+$$
+
+and the one of the female students follows the following:
+
+$$
+W_{f} \sim \mathcal{N}(65, 100).
+$$
+
+The conditional probability of missingness is higher for female students than
+for male students:
+
+$$
+\mathbb{P} [M = 1 | Sex = F] = 0.45
+$$
+
+versus:
+
+$$
+\mathbb{P} [M = 1 | Sex = M] = 0.25
+$$
+
+with $M$ an indicator variable for missingness, $M = 1$ if missing and $M = 0$
+otherwise.
+
+Because the probability of missingness is higher for female students, the
+observed values for weights are more representative of male students, and
+therefore these lift the sample mean up.
+
+```{r echo = FALSE}
+ggplot(tibble::tibble(mean_weight = mean_weights), aes(x = mean_weight)) +
+  geom_histogram(bins = 50) +
+  geom_vline(xintercept = mu_weight, color = "blue") +
+  geom_vline(xintercept = mean(mean_weights), color = "red") +
+  theme_bw() +
+  labs(
+    title = "Distribution of Sample Means",
+    x = "Mean Weight (kg)", y = "Count",
+    subtitle = "Blue: Population mean | Red: Mean of sample means"
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Overall, complete-case analysis results in a reduction in precision due to not
+all observations being used. Furthermore, when applying complete-case analysis
+when MAR is applicable, the estimates are biased.
+
+### Mean Value Imputation
+
+Mean value imputation is a technique in which missing values are imputed with
+the mean of the observed values. Because the same value is imputed for every
+missing value, the true variability is artificially reduced. This leads to a
+reduction in standard errors and this an artificially high precision. With MAR,
+mean value imputation can also lead to biased estimates. We illustrate:
+
+```{r}
+# Ensure reproducibility
+set.seed(123)
+
+# Repeat the sampling 1000 times to obtain 1000 samples
+N <- 1000
+mean_weights <- rep(x = NA, times = N)
+
+for (i in 1:N) {
+  
+  # Draw a random sample of 100 students
+  idxs <- sample(x = n, size = 100, replace = FALSE)
+  student_sample <- weights[idxs,]
+  
+  # Simulate MCAR: the observations in the sample with missing data are a random
+  # subset of the sample
+  idxs <- sample(x = student_sample$idx, size = 30)
+  student_sample$missing <- student_sample$idx %in% idxs
+  
+  # Calculate the sample mean
+  mean_weights[i] <- mean(student_sample[student_sample$missing == FALSE,]$weight)
+
+}
+
+mean_estimator <- mean(mean_weights)
+se_estimator <- sd(mean_weights)
+```
+
+We now demonstrate mean value imputation with the lifestyle dataset. First, let
+us investigate the missing data. There are 762 observations without any missing
+values, 138 observations with a missing value for height, 88 observations with a
+missing value for weight, and 12 observations with missing values for height and
+weight.
+
+```{r echo = FALSE}
+res <- mice::md.pattern(x = lifestyle)
+```
+
+We can use the **mice** package to apply mean value imputation. Note that we
+only need one imputed dataset, because, in this case, every imputed dataset will
+be the same. The imputed value for **weight** equals
+`r mean(lifestyle$weight, na.rm = TRUE)` and for **height** equals
+`r mean(lifestyle$height, na.rm = TRUE)`.
+
+```{r}
+# Impute the missing values with the mean of the observed values
+imputed_lifestyle <- mice::mice(
+  data = lifestyle,
+  m = 1,
+  method = "mean",
+  printFlag = FALSE,
+)
 ```
 
 ```{r}
-observed <- !weights$mar
+imputed_lifestyle_1 <- mice::complete(imputed_lifestyle, 1)
+```
+
+## MICE
+
+### Continuous Variables
+
+We have two continuous variables for which we have missing data: **weight** and
+**height**.
+
+#### Regression-Based Imputation
+
+```{r}
+# Impute missing values with regression-based imputation
+imputed_lifestyle <- mice::mice(
+  data = lifestyle,
+  m = 1,
+  method = c(age = "", sex = "", weight = "norm", height = "norm"),
+  printFlag = FALSE,
+)
 ```
 
 ```{r}
-X <- as.factor(weights$sex)
+# Extract an imputed dataset
+imputed_lifestyle_1 <- mice::complete(imputed_lifestyle, 1)
+```
+
+#### Predictive Mean Matching
+
+```{r}
+# Impute missing values with predictive mean matching
+imputed_lifestyle <- mice::mice(
+  data = lifestyle,
+  m = 1,
+  method = c(age = "", sex = "", weight = "pmm", height = "pmm"),
+  printFlag = FALSE,
+)
 ```
 
 ```{r}
-fit <- glm(formula = observed ~ X, family = "binomial")
+# Extract an imputed dataset
+imputed_lifestyle_1 <- mice::complete(imputed_lifestyle, 1)
+```
+
+We can also use an imputation model. We will choose what variables are used
+for each variable to impute.
+
+```{r}
+# Create a predication matrix
+pred_matrix <- matrix(
+  data = c(
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 1, 0, 1,
+    0, 1, 1, 0
+  ),
+  nrow = length(lifestyle),
+  byrow = TRUE,
+)
+colnames(pred_matrix) <- colnames(lifestyle)
+rownames(pred_matrix) <- colnames(lifestyle)
+pred_matrix
+```
+
+
+```{r}
+imputed_lifestyle <- mice::mice(
+  data = lifestyle,
+  m = 5,
+  seed = 123,
+  printFlag = FALSE,
+  predictorMatrix = pred_matrix,
+  method = c("", "", "mean", "mean"),
+)
 ```
 
 ```{r}
-ipw_f <- exp(fit$coefficients[1]) / (1 + exp(fit$coefficients[1]))
-ipw_m <- exp(fit$coefficients[2]) / (1 + exp(fit$coefficients[2]))
+mice::complete(imputed_lifestyle, 1) %>% View()
 ```
 
+## Investigate Missing Data
 
+When missing data occurs, it must be investigated. A first step is to quantify
+the missing data:
 
+1) How many missing values are there (absolute and relative)?
+2) How many variables have missing values?
+3) How many observations have at least one missing value?
+
+```{r}
+# Load the air quality dataset
+data(airquality)
+```
+
+To get a better feeling on how many missing data there is, we can first check
+how many values (observed and missing) there are. There are 153 observations and
+6 variables, giving a total of 918 values (data points).
+
+```{r}
+dim(airquality)
+```
+
+```{r}
+# Calculate the total number of values
+nrow(airquality) * ncol(airquality)
+```
+
+A call to **summary()** helps us understand how many variables have missing
+values.
+
+```{r}
+summary(airquality)
+```
+
+```{r}
+# Calculate the quantity of missing values
+sum(is.na(airquality))
+
+# Calculate the relative quantity of missing values
+round(sum(is.na(airquality)) * 100 / (nrow(airquality) * ncol(airquality)), 2)
+```
+
+```{r}
+# Calculate the quantity of missing values per variable
+sapply(airquality, function(x) sum(is.na(x)))
+
+# Calculate the relative quantity of missing values per variable
+sapply(airquality, function(x) sum(is.na(x)) * 100 / length(x))
+```
+
+To better understand the missing data, the **mice** package provides the
+**md.pattern()** function. The following plot shows us that 111 observations have
+no missing values. 40 observations have one missing value, of which 35 have a
+missing value for **Ozone** and 5 observations have a missing value for
+**Solar.R**. Finally, two observations each have two missing values in the
+variables **Solar.R** and **Ozone**.
+
+```{r}
+res <- mice::md.pattern(x = airquality)
+```
+
+Another helpful package to help understand the missing data is **VIM**, which
+enables to create the following figure.
+
+```{r}
+md_plot <- VIM::aggr(
+  x = airquality,
+  col = c('navyblue','red'),
+  numbers = TRUE,
+  sortVars = TRUE,
+  labels = names(data),
+  cex.axis = .7,
+  gap = 3,
+  ylab = c("Histogram of missing data", "Pattern of missing data")
+)
+```
+
+We can now use the **mice** package to impute the missing values with an
+imputation method of our choice.
+
+```{r}
+# Impute the missing values using predictive mean matching
+imputed_data_pmm <- mice::mice(
+  data = airquality,
+  m = 5, # the number of imputed datasets
+  method = "pmm", # the imputation method (predictive mean matching)
+  maxit = 50,
+  seed = 500,
+  printFlag = FALSE,
+)
+```
+
+```{r}
+summary(imputed_data_pmm)
+```
+
+```{r}
+# Check the imputed values
+imputed_data_pmm$imp$Ozone
+```
+
+```{r}
+# Get one of the five complete (imputed) datasets
+imp_1 <- mice::complete(imputed_data_pmm, 1)
+dim(imp_1)
+```
+
+A density plot allows us to compare the distributions of the imputed values
+(magenta) for each imputed dataset with the distribution of the observed values
+(blue).
+
+```{r}
+# We can compare the distributions of the imputed values with the distribution
+# of the observed values
+mice::densityplot(x = imputed_data_pmm)
+```
+
+```{r}
+# Another helpful plot
+mice::stripplot(imputed_data_pmm, pch = 20, cex = 1.2)
+```
+
+```{r}
+# Get a list of possible imputation methods
+methods(mice)
+```
+
+Suppose we want to use different imputation methods for the different variables
+that have missing values.
+
+```{r}
+# Impute the missing values using predictive mean matching
+imputed_data_pmm <- mice::mice(
+  data = airquality,
+  m = 5,
+  method = c("pmm", "mean", "", "", "", ""),
+  maxit = 50,
+  seed = 500,
+  printFlag = FALSE,
+)
+```
+
+```{r}
+summary(imputed_data_pmm)
+```
 
 

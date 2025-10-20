@@ -17,4 +17,9 @@ simulation-setup
 missingness-completely-at-random
 missingness-at-random
 missingness-not-at-random
-missingness-methods
+handling-missing-data
+example-case
+complete-case-analysis
+mean-value-imputation
+mice-multiple-imputation-by-chained-equations
+investigate-missing-data

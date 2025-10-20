@@ -26,7 +26,7 @@ probability.</p>" />
 <meta name="author" content="Frederick De Baene" />
 
 
-<meta name="date" content="2025-03-23" />
+<meta name="date" content="2025-10-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -172,7 +172,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.3" data-path="missingness.html"><a href="missingness.html#missingness-at-random"><i class="fa fa-check"></i><b>3.2.3</b> Missingness at Random</a></li>
 <li class="chapter" data-level="3.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>3.2.4</b> Missingness Not at Random</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="missingness.html"><a href="missingness.html#missingness-methods"><i class="fa fa-check"></i><b>3.3</b> Missingness Methods</a></li>
+<li class="chapter" data-level="3.3" data-path="missingness.html"><a href="missingness.html#handling-missing-data"><i class="fa fa-check"></i><b>3.3</b> Handling Missing Data</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="missingness.html"><a href="missingness.html#example-case"><i class="fa fa-check"></i><b>3.3.1</b> Example Case</a></li>
+<li class="chapter" data-level="3.3.2" data-path="missingness.html"><a href="missingness.html#complete-case-analysis"><i class="fa fa-check"></i><b>3.3.2</b> Complete Case Analysis</a></li>
+<li class="chapter" data-level="3.3.3" data-path="missingness.html"><a href="missingness.html#mean-value-imputation"><i class="fa fa-check"></i><b>3.3.3</b> Mean Value Imputation</a></li>
+<li class="chapter" data-level="3.3.4" data-path="missingness.html"><a href="missingness.html#mice-multiple-imputation-by-chained-equations"><i class="fa fa-check"></i><b>3.3.4</b> MICE: Multiple Imputation by Chained Equations</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="missingness.html"><a href="missingness.html#investigate-missing-data"><i class="fa fa-check"></i><b>3.4</b> Investigate Missing Data</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -196,6 +203,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="missingness" class="section level1 hasAnchor" number="3">
 <h1><span class="header-section-number">3</span> Missingness<a href="missingness.html#missingness" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="missingness.html#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
+<span id="cb1-2"><a href="missingness.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(VIM)</span></code></pre></div>
 <div id="introduction" class="section level2 hasAnchor" number="3.1">
 <h2><span class="header-section-number">3.1</span> Introduction<a href="missingness.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>When fitting models to a particular data set, missingness is of particular
@@ -233,49 +242,50 @@ distributed as follows:</p>
 <p><span class="math display">\[
 BMI \sim \mathcal{N}(25, 9).
 \]</span></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="missingness.html#cb1-1" tabindex="-1"></a><span class="co"># Simulate patient data. The data set contains 10000 observations, and is </span></span>
-<span id="cb1-2"><a href="missingness.html#cb1-2" tabindex="-1"></a><span class="co"># balanced in terms of sex.</span></span>
-<span id="cb1-3"><a href="missingness.html#cb1-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-4"><a href="missingness.html#cb1-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb1-5"><a href="missingness.html#cb1-5" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="missingness.html#cb1-6" tabindex="-1"></a><span class="co"># Define the parameters that define the distribution of weight and BMI</span></span>
-<span id="cb1-7"><a href="missingness.html#cb1-7" tabindex="-1"></a>sd_bmi <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb1-8"><a href="missingness.html#cb1-8" tabindex="-1"></a>mu_bmi <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb1-9"><a href="missingness.html#cb1-9" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="missingness.html#cb1-10" tabindex="-1"></a>sd_weight <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb1-11"><a href="missingness.html#cb1-11" tabindex="-1"></a>mu_weight_f <span class="ot">&lt;-</span> <span class="dv">65</span></span>
-<span id="cb1-12"><a href="missingness.html#cb1-12" tabindex="-1"></a>mu_weight_m <span class="ot">&lt;-</span> <span class="dv">78</span></span>
-<span id="cb1-13"><a href="missingness.html#cb1-13" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="missingness.html#cb1-14" tabindex="-1"></a>weights <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb1-15"><a href="missingness.html#cb1-15" tabindex="-1"></a>  <span class="at">idx =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
-<span id="cb1-16"><a href="missingness.html#cb1-16" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb1-17"><a href="missingness.html#cb1-17" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(</span>
-<span id="cb1-18"><a href="missingness.html#cb1-18" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_f, sd_weight),</span>
-<span id="cb1-19"><a href="missingness.html#cb1-19" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_m, sd_weight)</span>
-<span id="cb1-20"><a href="missingness.html#cb1-20" tabindex="-1"></a>  ),</span>
-<span id="cb1-21"><a href="missingness.html#cb1-21" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, mu_bmi, sd_bmi), <span class="dv">1</span>)</span>
-<span id="cb1-22"><a href="missingness.html#cb1-22" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missingness.html#cb2-1" tabindex="-1"></a><span class="co"># Simulate patient data. The data set contains 10000 observations, and is </span></span>
+<span id="cb2-2"><a href="missingness.html#cb2-2" tabindex="-1"></a><span class="co"># balanced in terms of sex.</span></span>
+<span id="cb2-3"><a href="missingness.html#cb2-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-4"><a href="missingness.html#cb2-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb2-5"><a href="missingness.html#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="missingness.html#cb2-6" tabindex="-1"></a><span class="co"># Define the parameters that define the distribution of weight and BMI</span></span>
+<span id="cb2-7"><a href="missingness.html#cb2-7" tabindex="-1"></a>sd_bmi <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb2-8"><a href="missingness.html#cb2-8" tabindex="-1"></a>mu_bmi <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb2-9"><a href="missingness.html#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="missingness.html#cb2-10" tabindex="-1"></a>sd_weight <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb2-11"><a href="missingness.html#cb2-11" tabindex="-1"></a>mu_weight_f <span class="ot">&lt;-</span> <span class="dv">65</span></span>
+<span id="cb2-12"><a href="missingness.html#cb2-12" tabindex="-1"></a>mu_weight_m <span class="ot">&lt;-</span> <span class="dv">78</span></span>
+<span id="cb2-13"><a href="missingness.html#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="missingness.html#cb2-14" tabindex="-1"></a>weights <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb2-15"><a href="missingness.html#cb2-15" tabindex="-1"></a>  <span class="at">idx =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb2-16"><a href="missingness.html#cb2-16" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb2-17"><a href="missingness.html#cb2-17" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(</span>
+<span id="cb2-18"><a href="missingness.html#cb2-18" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_f, sd_weight),</span>
+<span id="cb2-19"><a href="missingness.html#cb2-19" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_m, sd_weight)</span>
+<span id="cb2-20"><a href="missingness.html#cb2-20" tabindex="-1"></a>  ),</span>
+<span id="cb2-21"><a href="missingness.html#cb2-21" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, mu_bmi, sd_bmi), <span class="dv">1</span>)</span>
+<span id="cb2-22"><a href="missingness.html#cb2-22" tabindex="-1"></a>)</span></code></pre></div>
 <p>We can see that the conditional distributions of weight given sex have different
 means.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>But the conditional distributions of BMI are the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="missingness-completely-at-random" class="section level3 hasAnchor" number="3.2.2">
 <h3><span class="header-section-number">3.2.2</span> Missingness Completely at Random<a href="missingness.html#missingness-completely-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Missingness completely at random indicates that the observations with missing
 values are a random subset of all observations. There are no factors that affect
-the probability of missingness, nor is the probability of missingess affected by
-the outcome itself (weight or BMI). The distribution of observed and missing
-values is the same.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missingness.html#cb2-1" tabindex="-1"></a><span class="co"># Simulate MCAR: assume that 30% of observations have a missing outcome</span></span>
-<span id="cb2-2"><a href="missingness.html#cb2-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb2-3"><a href="missingness.html#cb2-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> n <span class="sc">*</span> <span class="fl">0.3</span>)</span>
-<span id="cb2-4"><a href="missingness.html#cb2-4" tabindex="-1"></a>weights[<span class="st">&quot;mcar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+the probability of missingness, nor is the probability of missingness affected
+by the outcome itself (weight or BMI); the probability of missingness does not
+depend on observed nor unobserved variables. The distribution of observed and
+missing values is the same.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missingness.html#cb3-1" tabindex="-1"></a><span class="co"># Simulate MCAR: assume that 30% of observations have a missing outcome</span></span>
+<span id="cb3-2"><a href="missingness.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-3"><a href="missingness.html#cb3-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> n <span class="sc">*</span> <span class="fl">0.3</span>)</span>
+<span id="cb3-4"><a href="missingness.html#cb3-4" tabindex="-1"></a>weights[<span class="st">&quot;mcar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>Because the observations with missing values are a random subset of all
 observations, we should see no difference between the distributions of missing
 and observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="missingness-at-random" class="section level3 hasAnchor" number="3.2.3">
 <h3><span class="header-section-number">3.2.3</span> Missingness at Random<a href="missingness.html#missingness-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -283,25 +293,25 @@ and observed values.</p>
 probability of missingness, and that these same factors also have an effect on
 the outcome. In our example, we see that sex affects the weight. We now assume
 that sex also affects the probability of missingness.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missingness.html#cb3-1" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
-<span id="cb3-2"><a href="missingness.html#cb3-2" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
-<span id="cb3-3"><a href="missingness.html#cb3-3" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
-<span id="cb3-4"><a href="missingness.html#cb3-4" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="missingness.html#cb3-5" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb3-6"><a href="missingness.html#cb3-6" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb3-7"><a href="missingness.html#cb3-7" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb3-8"><a href="missingness.html#cb3-8" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_f</span>
-<span id="cb3-9"><a href="missingness.html#cb3-9" tabindex="-1"></a>  ),</span>
-<span id="cb3-10"><a href="missingness.html#cb3-10" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb3-11"><a href="missingness.html#cb3-11" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb3-12"><a href="missingness.html#cb3-12" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_m</span>
-<span id="cb3-13"><a href="missingness.html#cb3-13" tabindex="-1"></a>  )</span>
-<span id="cb3-14"><a href="missingness.html#cb3-14" tabindex="-1"></a>)</span>
-<span id="cb3-15"><a href="missingness.html#cb3-15" tabindex="-1"></a>weights[<span class="st">&quot;mar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="missingness.html#cb4-1" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
+<span id="cb4-2"><a href="missingness.html#cb4-2" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
+<span id="cb4-3"><a href="missingness.html#cb4-3" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb4-4"><a href="missingness.html#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="missingness.html#cb4-5" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-6"><a href="missingness.html#cb4-6" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb4-7"><a href="missingness.html#cb4-7" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb4-8"><a href="missingness.html#cb4-8" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_f</span>
+<span id="cb4-9"><a href="missingness.html#cb4-9" tabindex="-1"></a>  ),</span>
+<span id="cb4-10"><a href="missingness.html#cb4-10" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb4-11"><a href="missingness.html#cb4-11" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb4-12"><a href="missingness.html#cb4-12" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_m</span>
+<span id="cb4-13"><a href="missingness.html#cb4-13" tabindex="-1"></a>  )</span>
+<span id="cb4-14"><a href="missingness.html#cb4-14" tabindex="-1"></a>)</span>
+<span id="cb4-15"><a href="missingness.html#cb4-15" tabindex="-1"></a>weights[<span class="st">&quot;mar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>Inspection of the distributions of observed and missing values shows us that the
 distribution of missing values is shifted to the left compared to the
 distribution of observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Because the probability of missingness is higher for women then for men, the
 fraction of patients with a missing weight that are female is higher than the
 fraction of patients with a missing weight that are men. This affects the
@@ -309,7 +319,7 @@ distribution of the missing weights, i.e., shifting the distribution to the
 left. Assume that sex is the only factor that affects the probability of
 missingness, then, conditional on sex, the distribution of observed values and
 missing values is the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>We can see that, conditional on sex, the distribution of observed and missing
 weights is the same. This illustrates the concept of missingness at random. Sex
 is the factor that influences both the probability of missingness and the
@@ -327,7 +337,7 @@ by a factor that is recorded, but is affected by factors that are not recorded
 or even by the outcome itself. For this missingness pattern, we will not focus
 on the weight of the patient but on the patient’s BMI. The distribution of BMI
 is the same for women and for men:</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>However, we could argue the following: if a patient visits the GP, then the GP
 will more likely weigh the patient if he/she seems overweight or obese. We could
 make the same argument for underweight patients, but for the sake of
@@ -340,40 +350,40 @@ overweight and obese patients. Based on BMI, we can classify patients as:</p>
 <li>obese: <span class="math inline">\(30 \leq BMI\)</span>.</li>
 </ul>
 <p>We assume the following conditional probabilities of missingness:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="missingness.html#cb4-1" tabindex="-1"></a><span class="co"># Define conditional probabilities of missingness</span></span>
-<span id="cb4-2"><a href="missingness.html#cb4-2" tabindex="-1"></a>p_missing_uw_nw <span class="ot">&lt;-</span> <span class="fl">0.75</span> <span class="co"># underweight and normal weight</span></span>
-<span id="cb4-3"><a href="missingness.html#cb4-3" tabindex="-1"></a>p_missing_ow_ob <span class="ot">&lt;-</span> <span class="fl">0.55</span> <span class="co"># overweight and obese</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="missingness.html#cb5-1" tabindex="-1"></a><span class="co"># Classify patients based on their BMI</span></span>
-<span id="cb5-2"><a href="missingness.html#cb5-2" tabindex="-1"></a>weights <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="missingness.html#cb5-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb5-4"><a href="missingness.html#cb5-4" tabindex="-1"></a>    <span class="at">bmi_class =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb5-5"><a href="missingness.html#cb5-5" tabindex="-1"></a>      bmi <span class="sc">&lt;</span> <span class="fl">18.5</span> <span class="sc">~</span> <span class="st">&quot;uw&quot;</span>,</span>
-<span id="cb5-6"><a href="missingness.html#cb5-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">18.5</span>, <span class="fl">24.9</span>) <span class="sc">~</span> <span class="st">&quot;nw&quot;</span>,</span>
-<span id="cb5-7"><a href="missingness.html#cb5-7" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">25.0</span>, <span class="fl">29.9</span>) <span class="sc">~</span> <span class="st">&quot;ow&quot;</span>,</span>
-<span id="cb5-8"><a href="missingness.html#cb5-8" tabindex="-1"></a>      bmi <span class="sc">&gt;=</span> <span class="fl">30.0</span> <span class="sc">~</span> <span class="st">&quot;ob&quot;</span></span>
-<span id="cb5-9"><a href="missingness.html#cb5-9" tabindex="-1"></a>    )</span>
-<span id="cb5-10"><a href="missingness.html#cb5-10" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="missingness.html#cb6-1" tabindex="-1"></a>fd_bmi_classes_df <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="missingness.html#cb6-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(bmi_class) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="missingness.html#cb6-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>())</span>
-<span id="cb6-4"><a href="missingness.html#cb6-4" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="missingness.html#cb6-5" tabindex="-1"></a>fd_bmi_classes <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>n</span>
-<span id="cb6-6"><a href="missingness.html#cb6-6" tabindex="-1"></a><span class="fu">names</span>(fd_bmi_classes) <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>bmi_class</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="missingness.html#cb7-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
-<span id="cb7-2"><a href="missingness.html#cb7-2" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="missingness.html#cb7-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb7-4"><a href="missingness.html#cb7-4" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb7-5"><a href="missingness.html#cb7-5" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;uw&quot;</span>, <span class="st">&quot;nw&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb7-6"><a href="missingness.html#cb7-6" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;uw&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;nw&quot;</span>]) <span class="sc">*</span> p_missing_uw_nw)</span>
-<span id="cb7-7"><a href="missingness.html#cb7-7" tabindex="-1"></a>  ),</span>
-<span id="cb7-8"><a href="missingness.html#cb7-8" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb7-9"><a href="missingness.html#cb7-9" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ow&quot;</span>, <span class="st">&quot;ob&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb7-10"><a href="missingness.html#cb7-10" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;ow&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;ob&quot;</span>]) <span class="sc">*</span> p_missing_ow_ob)</span>
-<span id="cb7-11"><a href="missingness.html#cb7-11" tabindex="-1"></a>  )</span>
-<span id="cb7-12"><a href="missingness.html#cb7-12" tabindex="-1"></a>)</span>
-<span id="cb7-13"><a href="missingness.html#cb7-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="missingness.html#cb5-1" tabindex="-1"></a><span class="co"># Define conditional probabilities of missingness</span></span>
+<span id="cb5-2"><a href="missingness.html#cb5-2" tabindex="-1"></a>p_missing_uw_nw <span class="ot">&lt;-</span> <span class="fl">0.75</span> <span class="co"># underweight and normal weight</span></span>
+<span id="cb5-3"><a href="missingness.html#cb5-3" tabindex="-1"></a>p_missing_ow_ob <span class="ot">&lt;-</span> <span class="fl">0.55</span> <span class="co"># overweight and obese</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="missingness.html#cb6-1" tabindex="-1"></a><span class="co"># Classify patients based on their BMI</span></span>
+<span id="cb6-2"><a href="missingness.html#cb6-2" tabindex="-1"></a>weights <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="missingness.html#cb6-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb6-4"><a href="missingness.html#cb6-4" tabindex="-1"></a>    <span class="at">bmi_class =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb6-5"><a href="missingness.html#cb6-5" tabindex="-1"></a>      bmi <span class="sc">&lt;</span> <span class="fl">18.5</span> <span class="sc">~</span> <span class="st">&quot;uw&quot;</span>,</span>
+<span id="cb6-6"><a href="missingness.html#cb6-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">18.5</span>, <span class="fl">24.9</span>) <span class="sc">~</span> <span class="st">&quot;nw&quot;</span>,</span>
+<span id="cb6-7"><a href="missingness.html#cb6-7" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">25.0</span>, <span class="fl">29.9</span>) <span class="sc">~</span> <span class="st">&quot;ow&quot;</span>,</span>
+<span id="cb6-8"><a href="missingness.html#cb6-8" tabindex="-1"></a>      bmi <span class="sc">&gt;=</span> <span class="fl">30.0</span> <span class="sc">~</span> <span class="st">&quot;ob&quot;</span></span>
+<span id="cb6-9"><a href="missingness.html#cb6-9" tabindex="-1"></a>    )</span>
+<span id="cb6-10"><a href="missingness.html#cb6-10" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="missingness.html#cb7-1" tabindex="-1"></a>fd_bmi_classes_df <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="missingness.html#cb7-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(bmi_class) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="missingness.html#cb7-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>())</span>
+<span id="cb7-4"><a href="missingness.html#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="missingness.html#cb7-5" tabindex="-1"></a>fd_bmi_classes <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>n</span>
+<span id="cb7-6"><a href="missingness.html#cb7-6" tabindex="-1"></a><span class="fu">names</span>(fd_bmi_classes) <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>bmi_class</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="missingness.html#cb8-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb8-2"><a href="missingness.html#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="missingness.html#cb8-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb8-4"><a href="missingness.html#cb8-4" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb8-5"><a href="missingness.html#cb8-5" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;uw&quot;</span>, <span class="st">&quot;nw&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb8-6"><a href="missingness.html#cb8-6" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;uw&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;nw&quot;</span>]) <span class="sc">*</span> p_missing_uw_nw)</span>
+<span id="cb8-7"><a href="missingness.html#cb8-7" tabindex="-1"></a>  ),</span>
+<span id="cb8-8"><a href="missingness.html#cb8-8" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb8-9"><a href="missingness.html#cb8-9" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ow&quot;</span>, <span class="st">&quot;ob&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb8-10"><a href="missingness.html#cb8-10" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;ow&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;ob&quot;</span>]) <span class="sc">*</span> p_missing_ow_ob)</span>
+<span id="cb8-11"><a href="missingness.html#cb8-11" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="missingness.html#cb8-12" tabindex="-1"></a>)</span>
+<span id="cb8-13"><a href="missingness.html#cb8-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>First, let’s have a look at the distribution of BMI conditional on missingness.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>The distribution of the missing BMI values is shifted to the left compared to
 the distribution of the observed BMI values. This makes sense as the probability
 of the weight being recorded, and thus the BMI being calculated, is bigger as
@@ -382,24 +392,390 @@ a patient tends to be overweight or obese.</p>
 missigness, nor is there any other factor that influences the probability of
 missingness, only the outcome itself. Therefore, conditioning on sex, will not
 eliminate the difference in distribution between observed and missing values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 </div>
-<div id="missingness-methods" class="section level2 hasAnchor" number="3.3">
-<h2><span class="header-section-number">3.3</span> Missingness Methods<a href="missingness.html#missingness-methods" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>We can calculate the mean weight for the population if we now the proportion of
-men and women in the population. If it is <span class="math inline">\(1/2\)</span>, then the population mean of
-the weigth is:</p>
+<div id="handling-missing-data" class="section level2 hasAnchor" number="3.3">
+<h2><span class="header-section-number">3.3</span> Handling Missing Data<a href="missingness.html#handling-missing-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are different approaches to handle missing data. They are not always
+suitable for every situation and have different drawbacks. In this section, we
+will go over the different approaches and discuss when to use them and their
+disadvantages. When going over these different approaches to handle missingness,
+it is important to consider bias and precision. We will come back to this.</p>
+<div id="example-case" class="section level3 hasAnchor" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Example Case<a href="missingness.html#example-case" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To demonstrate the different approaches, we use the data set on the weights. The
+data set contains the weight for all students enrolled in a particular school.
+The population mean for the weight can be calculated and is:</p>
 <p><span class="math display">\[
-E(E(Weight | Sex)) = E(Weight | Sex = M) \times 0.5 + E(Weight | Sex = F) \times 0.5 = 71.5
+\mathbb{E} [W] = 71.476
 \]</span></p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="missingness.html#cb8-1" tabindex="-1"></a><span class="fu">mean</span>(weights<span class="sc">$</span>weight)</span></code></pre></div>
-<pre><code>## [1] 71.47628</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="missingness.html#cb10-1" tabindex="-1"></a>observed <span class="ot">&lt;-</span> <span class="sc">!</span>weights<span class="sc">$</span>mar</span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="missingness.html#cb11-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(weights<span class="sc">$</span>sex)</span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="missingness.html#cb12-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> observed <span class="sc">~</span> X, <span class="at">family =</span> <span class="st">&quot;binomial&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="missingness.html#cb13-1" tabindex="-1"></a>ipw_f <span class="ot">&lt;-</span> <span class="fu">exp</span>(fit<span class="sc">$</span>coefficients[<span class="dv">1</span>]) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(fit<span class="sc">$</span>coefficients[<span class="dv">1</span>]))</span>
-<span id="cb13-2"><a href="missingness.html#cb13-2" tabindex="-1"></a>ipw_m <span class="ot">&lt;-</span> <span class="fu">exp</span>(fit<span class="sc">$</span>coefficients[<span class="dv">2</span>]) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(fit<span class="sc">$</span>coefficients[<span class="dv">2</span>]))</span></code></pre></div>
+<p>If we want to estimate the population mean for weight, we can draw a random
+sample of 100 students and use the unbiased estimator, i.e., the sample average,
+to calculate an estimate for the mean weight. If we do this repeatedly, then the
+mean of the unbiased estimator approaches the population mean.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="missingness.html#cb9-1" tabindex="-1"></a><span class="co"># Ensure reproducibility</span></span>
+<span id="cb9-2"><a href="missingness.html#cb9-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb9-3"><a href="missingness.html#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="missingness.html#cb9-4" tabindex="-1"></a><span class="co"># Repeat the sampling 1000 times to obtain 1000 samples</span></span>
+<span id="cb9-5"><a href="missingness.html#cb9-5" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb9-6"><a href="missingness.html#cb9-6" tabindex="-1"></a>mean_weights <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="cn">NA</span>, <span class="at">times =</span> N)</span>
+<span id="cb9-7"><a href="missingness.html#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="missingness.html#cb9-8" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb9-9"><a href="missingness.html#cb9-9" tabindex="-1"></a>  </span>
+<span id="cb9-10"><a href="missingness.html#cb9-10" tabindex="-1"></a>  <span class="co"># Draw a random sample of 100 students and calculate the sample mean</span></span>
+<span id="cb9-11"><a href="missingness.html#cb9-11" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-12"><a href="missingness.html#cb9-12" tabindex="-1"></a>  mean_weights[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(weights<span class="sc">$</span>weight[idxs])</span>
+<span id="cb9-13"><a href="missingness.html#cb9-13" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="missingness.html#cb9-14" tabindex="-1"></a>}</span>
+<span id="cb9-15"><a href="missingness.html#cb9-15" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="missingness.html#cb9-16" tabindex="-1"></a>mean_estimator <span class="ot">&lt;-</span> <span class="fu">mean</span>(mean_weights)</span>
+<span id="cb9-17"><a href="missingness.html#cb9-17" tabindex="-1"></a>se_estimator <span class="ot">&lt;-</span> <span class="fu">sd</span>(mean_weights)</span></code></pre></div>
+<p>The mean of the sample means equals 71.514, which is
+very close to the population mean of 71.476. The following
+figure illustrates that the expectation of the estimator is close to the
+population parameter value. Furthermore, the precision of the estimator can be
+gauged from this figure.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>To calculate the precision, we will calculate the standard error empirically
+as the standard deviation of the sample means, which then equals
+1.163.</p>
+</div>
+<div id="complete-case-analysis" class="section level3 hasAnchor" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Complete Case Analysis<a href="missingness.html#complete-case-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Complete case analysis only uses those observations without missing values. If
+there is MCAR, then estimates are unbiased but the precision will not be as good
+because less data is being used. We can illustrate this.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="missingness.html#cb10-1" tabindex="-1"></a><span class="co"># Ensure reproducibility</span></span>
+<span id="cb10-2"><a href="missingness.html#cb10-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb10-3"><a href="missingness.html#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="missingness.html#cb10-4" tabindex="-1"></a><span class="co"># Repeat the sampling 1000 times to obtain 1000 samples</span></span>
+<span id="cb10-5"><a href="missingness.html#cb10-5" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb10-6"><a href="missingness.html#cb10-6" tabindex="-1"></a>mean_weights <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="cn">NA</span>, <span class="at">times =</span> N)</span>
+<span id="cb10-7"><a href="missingness.html#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="missingness.html#cb10-8" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb10-9"><a href="missingness.html#cb10-9" tabindex="-1"></a>  </span>
+<span id="cb10-10"><a href="missingness.html#cb10-10" tabindex="-1"></a>  <span class="co"># Draw a random sample of 100 students</span></span>
+<span id="cb10-11"><a href="missingness.html#cb10-11" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-12"><a href="missingness.html#cb10-12" tabindex="-1"></a>  student_sample <span class="ot">&lt;-</span> weights[idxs,]</span>
+<span id="cb10-13"><a href="missingness.html#cb10-13" tabindex="-1"></a>  </span>
+<span id="cb10-14"><a href="missingness.html#cb10-14" tabindex="-1"></a>  <span class="co"># Simulate MCAR: the observations in the sample with missing data are a random</span></span>
+<span id="cb10-15"><a href="missingness.html#cb10-15" tabindex="-1"></a>  <span class="co"># subset of the sample</span></span>
+<span id="cb10-16"><a href="missingness.html#cb10-16" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> student_sample<span class="sc">$</span>idx, <span class="at">size =</span> <span class="dv">30</span>)</span>
+<span id="cb10-17"><a href="missingness.html#cb10-17" tabindex="-1"></a>  student_sample<span class="sc">$</span>missing <span class="ot">&lt;-</span> student_sample<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span>
+<span id="cb10-18"><a href="missingness.html#cb10-18" tabindex="-1"></a>  </span>
+<span id="cb10-19"><a href="missingness.html#cb10-19" tabindex="-1"></a>  <span class="co"># Calculate the sample mean</span></span>
+<span id="cb10-20"><a href="missingness.html#cb10-20" tabindex="-1"></a>  mean_weights[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(student_sample[student_sample<span class="sc">$</span>missing <span class="sc">==</span> <span class="cn">FALSE</span>,]<span class="sc">$</span>weight)</span>
+<span id="cb10-21"><a href="missingness.html#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="missingness.html#cb10-22" tabindex="-1"></a>}</span>
+<span id="cb10-23"><a href="missingness.html#cb10-23" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="missingness.html#cb10-24" tabindex="-1"></a>mean_estimator <span class="ot">&lt;-</span> <span class="fu">mean</span>(mean_weights)</span>
+<span id="cb10-25"><a href="missingness.html#cb10-25" tabindex="-1"></a>se_estimator <span class="ot">&lt;-</span> <span class="fu">sd</span>(mean_weights)</span></code></pre></div>
+<p>We see that the expectation of the estimator <span class="math inline">\(\mathbb{E} [W] = 71.515\)</span>
+is still very close to the population mean 71.476, but the
+precision is not as good, equaling 1.432.</p>
+<p>With MAR, estimates are no longer unbiased. Because the probability of
+missingness depends on one or more observed variables. Again, we can illustrate
+this.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="missingness.html#cb11-1" tabindex="-1"></a><span class="co"># Ensure reproducibility</span></span>
+<span id="cb11-2"><a href="missingness.html#cb11-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-3"><a href="missingness.html#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="missingness.html#cb11-4" tabindex="-1"></a><span class="co"># Repeat the sampling 1000 times to obtain 1000 samples</span></span>
+<span id="cb11-5"><a href="missingness.html#cb11-5" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb11-6"><a href="missingness.html#cb11-6" tabindex="-1"></a>mean_weights <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="cn">NA</span>, <span class="at">times =</span> N)</span>
+<span id="cb11-7"><a href="missingness.html#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="missingness.html#cb11-8" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
+<span id="cb11-9"><a href="missingness.html#cb11-9" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
+<span id="cb11-10"><a href="missingness.html#cb11-10" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb11-11"><a href="missingness.html#cb11-11" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="missingness.html#cb11-12" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb11-13"><a href="missingness.html#cb11-13" tabindex="-1"></a>  </span>
+<span id="cb11-14"><a href="missingness.html#cb11-14" tabindex="-1"></a>  <span class="co"># Draw a random sample of 100 students</span></span>
+<span id="cb11-15"><a href="missingness.html#cb11-15" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-16"><a href="missingness.html#cb11-16" tabindex="-1"></a>  student_sample <span class="ot">&lt;-</span> weights[idxs,]</span>
+<span id="cb11-17"><a href="missingness.html#cb11-17" tabindex="-1"></a>  </span>
+<span id="cb11-18"><a href="missingness.html#cb11-18" tabindex="-1"></a>  <span class="co"># Simulate MCAR: the observations in the sample with missing data are a random</span></span>
+<span id="cb11-19"><a href="missingness.html#cb11-19" tabindex="-1"></a>  <span class="co"># subset of the sample</span></span>
+<span id="cb11-20"><a href="missingness.html#cb11-20" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb11-21"><a href="missingness.html#cb11-21" tabindex="-1"></a>    <span class="fu">sample</span>(</span>
+<span id="cb11-22"><a href="missingness.html#cb11-22" tabindex="-1"></a>      <span class="at">x =</span> student_sample[student_sample<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb11-23"><a href="missingness.html#cb11-23" tabindex="-1"></a>      <span class="at">size =</span> <span class="fu">round</span>(<span class="fu">nrow</span>(student_sample[student_sample<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>,]) <span class="sc">*</span> p_missing_f)</span>
+<span id="cb11-24"><a href="missingness.html#cb11-24" tabindex="-1"></a>    ),</span>
+<span id="cb11-25"><a href="missingness.html#cb11-25" tabindex="-1"></a>    <span class="fu">sample</span>(</span>
+<span id="cb11-26"><a href="missingness.html#cb11-26" tabindex="-1"></a>      <span class="at">x =</span> student_sample[student_sample<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb11-27"><a href="missingness.html#cb11-27" tabindex="-1"></a>      <span class="at">size =</span> <span class="fu">round</span>(<span class="fu">nrow</span>(student_sample[student_sample<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>,]) <span class="sc">*</span> p_missing_m)</span>
+<span id="cb11-28"><a href="missingness.html#cb11-28" tabindex="-1"></a>    )</span>
+<span id="cb11-29"><a href="missingness.html#cb11-29" tabindex="-1"></a>  )</span>
+<span id="cb11-30"><a href="missingness.html#cb11-30" tabindex="-1"></a>  student_sample<span class="sc">$</span>missing <span class="ot">&lt;-</span> student_sample<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span>
+<span id="cb11-31"><a href="missingness.html#cb11-31" tabindex="-1"></a>  </span>
+<span id="cb11-32"><a href="missingness.html#cb11-32" tabindex="-1"></a>  <span class="co"># Calculate the sample mean</span></span>
+<span id="cb11-33"><a href="missingness.html#cb11-33" tabindex="-1"></a>  mean_weights[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(student_sample[student_sample<span class="sc">$</span>missing <span class="sc">==</span> <span class="cn">FALSE</span>,]<span class="sc">$</span>weight)</span>
+<span id="cb11-34"><a href="missingness.html#cb11-34" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="missingness.html#cb11-35" tabindex="-1"></a>}</span>
+<span id="cb11-36"><a href="missingness.html#cb11-36" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="missingness.html#cb11-37" tabindex="-1"></a>mean_estimator <span class="ot">&lt;-</span> <span class="fu">mean</span>(mean_weights)</span>
+<span id="cb11-38"><a href="missingness.html#cb11-38" tabindex="-1"></a>se_estimator <span class="ot">&lt;-</span> <span class="fu">sd</span>(mean_weights)</span></code></pre></div>
+<p>We now see that the expectation of the estimator
+<span class="math inline">\(\mathbb{E} [W] = 72.527\)</span> is not as close to the
+population mean as seen previously. Furthermore, the empirical standard error
+of 1.337 is again larger. The population comprises male and
+female students. The weight of the male students follows the following
+distribution:</p>
+<p><span class="math display">\[
+W_{m} \sim \mathcal{N}(78, 100)
+\]</span></p>
+<p>and the one of the female students follows the following:</p>
+<p><span class="math display">\[
+W_{f} \sim \mathcal{N}(65, 100).
+\]</span></p>
+<p>The conditional probability of missingness is higher for female students than
+for male students:</p>
+<p><span class="math display">\[
+\mathbb{P} [M = 1 | Sex = F] = 0.45
+\]</span></p>
+<p>versus:</p>
+<p><span class="math display">\[
+\mathbb{P} [M = 1 | Sex = M] = 0.25
+\]</span></p>
+<p>with <span class="math inline">\(M\)</span> an indicator variable for missingness, <span class="math inline">\(M = 1\)</span> if missing and <span class="math inline">\(M = 0\)</span>
+otherwise.</p>
+<p>Because the probability of missingness is higher for female students, the
+observed values for weights are more representative of male students, and
+therefore these lift the sample mean up.</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Overall, complete-case analysis results in a reduction in precision due to not
+all observations being used. Furthermore, when applying complete-case analysis
+when MAR is applicable, the estimates are biased.</p>
+</div>
+<div id="mean-value-imputation" class="section level3 hasAnchor" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> Mean Value Imputation<a href="missingness.html#mean-value-imputation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Mean value imputation is a technique in which missing values are imputed with
+the mean of the observed values. Because the same value is imputed for every
+missing value, the true variability is artificially reduced. This leads to a
+reduction in standard errors and this an artificially high precision. With MAR,
+mean value imputation can also lead to biased estimates. We illustrate:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="missingness.html#cb12-1" tabindex="-1"></a><span class="co"># Ensure reproducibility</span></span>
+<span id="cb12-2"><a href="missingness.html#cb12-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-3"><a href="missingness.html#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="missingness.html#cb12-4" tabindex="-1"></a><span class="co"># Repeat the sampling 1000 times to obtain 1000 samples</span></span>
+<span id="cb12-5"><a href="missingness.html#cb12-5" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb12-6"><a href="missingness.html#cb12-6" tabindex="-1"></a>mean_weights <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="cn">NA</span>, <span class="at">times =</span> N)</span>
+<span id="cb12-7"><a href="missingness.html#cb12-7" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="missingness.html#cb12-8" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb12-9"><a href="missingness.html#cb12-9" tabindex="-1"></a>  </span>
+<span id="cb12-10"><a href="missingness.html#cb12-10" tabindex="-1"></a>  <span class="co"># Draw a random sample of 100 students</span></span>
+<span id="cb12-11"><a href="missingness.html#cb12-11" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> <span class="dv">100</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-12"><a href="missingness.html#cb12-12" tabindex="-1"></a>  student_sample <span class="ot">&lt;-</span> weights[idxs,]</span>
+<span id="cb12-13"><a href="missingness.html#cb12-13" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="missingness.html#cb12-14" tabindex="-1"></a>  <span class="co"># Simulate MCAR: the observations in the sample with missing data are a random</span></span>
+<span id="cb12-15"><a href="missingness.html#cb12-15" tabindex="-1"></a>  <span class="co"># subset of the sample</span></span>
+<span id="cb12-16"><a href="missingness.html#cb12-16" tabindex="-1"></a>  idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> student_sample<span class="sc">$</span>idx, <span class="at">size =</span> <span class="dv">30</span>)</span>
+<span id="cb12-17"><a href="missingness.html#cb12-17" tabindex="-1"></a>  student_sample<span class="sc">$</span>missing <span class="ot">&lt;-</span> student_sample<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span>
+<span id="cb12-18"><a href="missingness.html#cb12-18" tabindex="-1"></a>  </span>
+<span id="cb12-19"><a href="missingness.html#cb12-19" tabindex="-1"></a>  <span class="co"># Calculate the sample mean</span></span>
+<span id="cb12-20"><a href="missingness.html#cb12-20" tabindex="-1"></a>  mean_weights[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(student_sample[student_sample<span class="sc">$</span>missing <span class="sc">==</span> <span class="cn">FALSE</span>,]<span class="sc">$</span>weight)</span>
+<span id="cb12-21"><a href="missingness.html#cb12-21" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="missingness.html#cb12-22" tabindex="-1"></a>}</span>
+<span id="cb12-23"><a href="missingness.html#cb12-23" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="missingness.html#cb12-24" tabindex="-1"></a>mean_estimator <span class="ot">&lt;-</span> <span class="fu">mean</span>(mean_weights)</span>
+<span id="cb12-25"><a href="missingness.html#cb12-25" tabindex="-1"></a>se_estimator <span class="ot">&lt;-</span> <span class="fu">sd</span>(mean_weights)</span></code></pre></div>
+</div>
+<div id="mice-multiple-imputation-by-chained-equations" class="section level3 hasAnchor" number="3.3.4">
+<h3><span class="header-section-number">3.3.4</span> MICE: Multiple Imputation by Chained Equations<a href="missingness.html#mice-multiple-imputation-by-chained-equations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+</div>
+<div id="investigate-missing-data" class="section level2 hasAnchor" number="3.4">
+<h2><span class="header-section-number">3.4</span> Investigate Missing Data<a href="missingness.html#investigate-missing-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When missing data occurs, it must be investigated. A first step is to quantify
+the missing data:</p>
+<ol style="list-style-type: decimal">
+<li>How many missing values are there (absolute and relative)?</li>
+<li>How many variables have missing values?</li>
+<li>How many observations have at least one missing value?</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="missingness.html#cb13-1" tabindex="-1"></a><span class="co"># Load the air quality dataset</span></span>
+<span id="cb13-2"><a href="missingness.html#cb13-2" tabindex="-1"></a><span class="fu">data</span>(airquality)</span></code></pre></div>
+<p>To get a better feeling on how many missing data there is, we can first check
+how many values (observed and missing) there are. There are 153 observations and
+6 variables, giving a total of 918 values (data points).</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="missingness.html#cb14-1" tabindex="-1"></a><span class="fu">dim</span>(airquality)</span></code></pre></div>
+<pre><code>## [1] 153   6</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="missingness.html#cb16-1" tabindex="-1"></a><span class="co"># Calculate the total number of values</span></span>
+<span id="cb16-2"><a href="missingness.html#cb16-2" tabindex="-1"></a><span class="fu">nrow</span>(airquality) <span class="sc">*</span> <span class="fu">ncol</span>(airquality)</span></code></pre></div>
+<pre><code>## [1] 918</code></pre>
+<p>A call to <strong>summary()</strong> helps us understand how many variables have missing
+values.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="missingness.html#cb18-1" tabindex="-1"></a><span class="fu">summary</span>(airquality)</span></code></pre></div>
+<pre><code>##      Ozone           Solar.R           Wind             Temp           Month            Day      
+##  Min.   :  1.00   Min.   :  7.0   Min.   : 1.700   Min.   :56.00   Min.   :5.000   Min.   : 1.0  
+##  1st Qu.: 18.00   1st Qu.:115.8   1st Qu.: 7.400   1st Qu.:72.00   1st Qu.:6.000   1st Qu.: 8.0  
+##  Median : 31.50   Median :205.0   Median : 9.700   Median :79.00   Median :7.000   Median :16.0  
+##  Mean   : 42.13   Mean   :185.9   Mean   : 9.958   Mean   :77.88   Mean   :6.993   Mean   :15.8  
+##  3rd Qu.: 63.25   3rd Qu.:258.8   3rd Qu.:11.500   3rd Qu.:85.00   3rd Qu.:8.000   3rd Qu.:23.0  
+##  Max.   :168.00   Max.   :334.0   Max.   :20.700   Max.   :97.00   Max.   :9.000   Max.   :31.0  
+##  NA&#39;s   :37       NA&#39;s   :7</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="missingness.html#cb20-1" tabindex="-1"></a><span class="co"># Calculate the quantity of missing values</span></span>
+<span id="cb20-2"><a href="missingness.html#cb20-2" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(airquality))</span></code></pre></div>
+<pre><code>## [1] 44</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="missingness.html#cb22-1" tabindex="-1"></a><span class="co"># Calculate the relative quantity of missing values</span></span>
+<span id="cb22-2"><a href="missingness.html#cb22-2" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sum</span>(<span class="fu">is.na</span>(airquality)) <span class="sc">*</span> <span class="dv">100</span> <span class="sc">/</span> (<span class="fu">nrow</span>(airquality) <span class="sc">*</span> <span class="fu">ncol</span>(airquality)), <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 4.79</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="missingness.html#cb24-1" tabindex="-1"></a><span class="co"># Calculate the quantity of missing values per variable</span></span>
+<span id="cb24-2"><a href="missingness.html#cb24-2" tabindex="-1"></a><span class="fu">sapply</span>(airquality, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span></code></pre></div>
+<pre><code>##   Ozone Solar.R    Wind    Temp   Month     Day 
+##      37       7       0       0       0       0</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="missingness.html#cb26-1" tabindex="-1"></a><span class="co"># Calculate the relative quantity of missing values per variable</span></span>
+<span id="cb26-2"><a href="missingness.html#cb26-2" tabindex="-1"></a><span class="fu">sapply</span>(airquality, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)) <span class="sc">*</span> <span class="dv">100</span> <span class="sc">/</span> <span class="fu">length</span>(x))</span></code></pre></div>
+<pre><code>##     Ozone   Solar.R      Wind      Temp     Month       Day 
+## 24.183007  4.575163  0.000000  0.000000  0.000000  0.000000</code></pre>
+<p>To better understand the missing data, the <strong>mice</strong> package provides the
+<strong>md.pattern()</strong> function. The following plot shows us that 111 observations have
+no missing values. 40 observations have one missing value, of which 35 have a
+missing value for <strong>Ozone</strong> and 5 observations have a missing value for
+<strong>Solar.R</strong>. Finally, two observations each have two missing values in the
+variables <strong>Solar.R</strong> and <strong>Ozone</strong>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="missingness.html#cb28-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">md.pattern</span>(<span class="at">x =</span> airquality)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p>Another helpful package to help understand the missing data is <strong>VIM</strong>, which
+enables to create the following figure.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="missingness.html#cb29-1" tabindex="-1"></a>md_plot <span class="ot">&lt;-</span> VIM<span class="sc">::</span><span class="fu">aggr</span>(</span>
+<span id="cb29-2"><a href="missingness.html#cb29-2" tabindex="-1"></a>  <span class="at">x =</span> airquality,</span>
+<span id="cb29-3"><a href="missingness.html#cb29-3" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&#39;navyblue&#39;</span>,<span class="st">&#39;red&#39;</span>),</span>
+<span id="cb29-4"><a href="missingness.html#cb29-4" tabindex="-1"></a>  <span class="at">numbers =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb29-5"><a href="missingness.html#cb29-5" tabindex="-1"></a>  <span class="at">sortVars =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb29-6"><a href="missingness.html#cb29-6" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">names</span>(data),</span>
+<span id="cb29-7"><a href="missingness.html#cb29-7" tabindex="-1"></a>  <span class="at">cex.axis =</span> .<span class="dv">7</span>,</span>
+<span id="cb29-8"><a href="missingness.html#cb29-8" tabindex="-1"></a>  <span class="at">gap =</span> <span class="dv">3</span>,</span>
+<span id="cb29-9"><a href="missingness.html#cb29-9" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="fu">c</span>(<span class="st">&quot;Histogram of missing data&quot;</span>, <span class="st">&quot;Pattern of missing data&quot;</span>)</span>
+<span id="cb29-10"><a href="missingness.html#cb29-10" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<pre><code>## 
+##  Variables sorted by number of missings: 
+##  Variable      Count
+##     Ozone 0.24183007
+##   Solar.R 0.04575163
+##      Wind 0.00000000
+##      Temp 0.00000000
+##     Month 0.00000000
+##       Day 0.00000000</code></pre>
+<p>We can now use the <strong>mice</strong> package to impute the missing values with an
+imputation method of our choice.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="missingness.html#cb31-1" tabindex="-1"></a><span class="co"># Impute the missing values using predictive mean matching</span></span>
+<span id="cb31-2"><a href="missingness.html#cb31-2" tabindex="-1"></a>imputed_data_pmm <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">mice</span>(</span>
+<span id="cb31-3"><a href="missingness.html#cb31-3" tabindex="-1"></a>  <span class="at">data =</span> airquality,</span>
+<span id="cb31-4"><a href="missingness.html#cb31-4" tabindex="-1"></a>  <span class="at">m =</span> <span class="dv">5</span>, <span class="co"># the number of imputed datasets</span></span>
+<span id="cb31-5"><a href="missingness.html#cb31-5" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;pmm&quot;</span>, <span class="co"># the imputation method (predictive mean matching)</span></span>
+<span id="cb31-6"><a href="missingness.html#cb31-6" tabindex="-1"></a>  <span class="at">maxit =</span> <span class="dv">50</span>,</span>
+<span id="cb31-7"><a href="missingness.html#cb31-7" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">500</span>,</span>
+<span id="cb31-8"><a href="missingness.html#cb31-8" tabindex="-1"></a>  <span class="at">printFlag =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb31-9"><a href="missingness.html#cb31-9" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="missingness.html#cb32-1" tabindex="-1"></a><span class="fu">summary</span>(imputed_data_pmm)</span></code></pre></div>
+<pre><code>## Class: mids
+## Number of multiple imputations:  5 
+## Imputation methods:
+##   Ozone Solar.R    Wind    Temp   Month     Day 
+##   &quot;pmm&quot;   &quot;pmm&quot;      &quot;&quot;      &quot;&quot;      &quot;&quot;      &quot;&quot; 
+## PredictorMatrix:
+##         Ozone Solar.R Wind Temp Month Day
+## Ozone       0       1    1    1     1   1
+## Solar.R     1       0    1    1     1   1
+## Wind        1       1    0    1     1   1
+## Temp        1       1    1    0     1   1
+## Month       1       1    1    1     0   1
+## Day         1       1    1    1     1   0</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="missingness.html#cb34-1" tabindex="-1"></a><span class="co"># Check the imputed values</span></span>
+<span id="cb34-2"><a href="missingness.html#cb34-2" tabindex="-1"></a>imputed_data_pmm<span class="sc">$</span>imp<span class="sc">$</span>Ozone</span></code></pre></div>
+<pre><code>##      1   2   3  4   5
+## 5   14   8   6 19   8
+## 10  11  20  20 18  44
+## 25   8  18  19 19  18
+## 26  13  13  37 37  13
+## 27  37  13  12 11  21
+## 32  59  40  44 47  45
+## 33  30  59  13 45  36
+## 34  37  32  37 32   1
+## 35  63  20  89 35  40
+## 36  59  89  39 78  89
+## 37  36  16  30 16  41
+## 39  61  79  97 50  82
+## 42  50 115  77 61  78
+## 43  79  50  76 91  79
+## 45  45  46  45 28  45
+## 46  52  47  35 63  46
+## 52  35  59  96 59  35
+## 53  48  39  78 39  96
+## 54  40  49 110 89  49
+## 55  59  64 110 78  39
+## 56  28  45  59 44  52
+## 57  47  16  48 16  47
+## 58  23  21  39 41  30
+## 59  52  44  35 16  28
+## 60  21  23  23  9  21
+## 61  96  48  79 39 110
+## 65  36  16  29 23  23
+## 72  46  28  35 32  32
+## 75  48  40  37 35  48
+## 83  49  49  48 71  78
+## 84  35  59  59 49  71
+## 102 61  85  82 61  82
+## 103 28  31  20 45  35
+## 107 41  14  16 21  23
+## 115 36  13  20 16  23
+## 119 66  61  97 79 122
+## 150 41  21  36 21  11</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="missingness.html#cb36-1" tabindex="-1"></a><span class="co"># Get one of the five complete (imputed) datasets</span></span>
+<span id="cb36-2"><a href="missingness.html#cb36-2" tabindex="-1"></a>imp_1 <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">complete</span>(imputed_data_pmm, <span class="dv">1</span>)</span>
+<span id="cb36-3"><a href="missingness.html#cb36-3" tabindex="-1"></a><span class="fu">dim</span>(imp_1)</span></code></pre></div>
+<pre><code>## [1] 153   6</code></pre>
+<p>A density plot allows us to compare the distributions of the imputed values
+(magenta) for each imputed dataset with the distribution of the observed values
+(blue).</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="missingness.html#cb38-1" tabindex="-1"></a><span class="co"># We can compare the distributions of the imputed values with the distribution</span></span>
+<span id="cb38-2"><a href="missingness.html#cb38-2" tabindex="-1"></a><span class="co"># of the observed values</span></span>
+<span id="cb38-3"><a href="missingness.html#cb38-3" tabindex="-1"></a>mice<span class="sc">::</span><span class="fu">densityplot</span>(<span class="at">x =</span> imputed_data_pmm)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="missingness.html#cb39-1" tabindex="-1"></a><span class="co"># Another helpful plot</span></span>
+<span id="cb39-2"><a href="missingness.html#cb39-2" tabindex="-1"></a>mice<span class="sc">::</span><span class="fu">stripplot</span>(imputed_data_pmm, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="missingness.html#cb40-1" tabindex="-1"></a><span class="co"># Get a list of possible imputation methods</span></span>
+<span id="cb40-2"><a href="missingness.html#cb40-2" tabindex="-1"></a><span class="fu">methods</span>(mice)</span></code></pre></div>
+<pre><code>## Warning in .S3methods(generic.function, class, envir, all.names = all.names, : function &#39;mice&#39; appears not to be S3 generic; found functions that look
+## like S3 methods</code></pre>
+<pre><code>##  [1] mice.impute.2l.bin              mice.impute.2l.lmer             mice.impute.2l.norm             mice.impute.2l.pan             
+##  [5] mice.impute.2lonly.mean         mice.impute.2lonly.norm         mice.impute.2lonly.pmm          mice.impute.cart               
+##  [9] mice.impute.jomoImpute          mice.impute.lasso.logreg        mice.impute.lasso.norm          mice.impute.lasso.select.logreg
+## [13] mice.impute.lasso.select.norm   mice.impute.lda                 mice.impute.logreg              mice.impute.logreg.boot        
+## [17] mice.impute.mean                mice.impute.midastouch          mice.impute.mnar.logreg         mice.impute.mnar.norm          
+## [21] mice.impute.mpmm                mice.impute.norm                mice.impute.norm.boot           mice.impute.norm.nob           
+## [25] mice.impute.norm.predict        mice.impute.panImpute           mice.impute.passive             mice.impute.pmm                
+## [29] mice.impute.polr                mice.impute.polyreg             mice.impute.quadratic           mice.impute.rf                 
+## [33] mice.impute.ri                  mice.impute.sample              mice.mids                       mice.theme                     
+## see &#39;?methods&#39; for accessing help and source code</code></pre>
+<p>Suppose we want to use different imputation methods for the different variables
+that have missing values.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="missingness.html#cb43-1" tabindex="-1"></a><span class="co"># Impute the missing values using predictive mean matching</span></span>
+<span id="cb43-2"><a href="missingness.html#cb43-2" tabindex="-1"></a>imputed_data_pmm <span class="ot">&lt;-</span> mice<span class="sc">::</span><span class="fu">mice</span>(</span>
+<span id="cb43-3"><a href="missingness.html#cb43-3" tabindex="-1"></a>  <span class="at">data =</span> airquality,</span>
+<span id="cb43-4"><a href="missingness.html#cb43-4" tabindex="-1"></a>  <span class="at">m =</span> <span class="dv">5</span>,</span>
+<span id="cb43-5"><a href="missingness.html#cb43-5" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">c</span>(<span class="st">&quot;pmm&quot;</span>, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="st">&quot;&quot;</span>),</span>
+<span id="cb43-6"><a href="missingness.html#cb43-6" tabindex="-1"></a>  <span class="at">maxit =</span> <span class="dv">50</span>,</span>
+<span id="cb43-7"><a href="missingness.html#cb43-7" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">500</span>,</span>
+<span id="cb43-8"><a href="missingness.html#cb43-8" tabindex="-1"></a>  <span class="at">printFlag =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb43-9"><a href="missingness.html#cb43-9" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="missingness.html#cb44-1" tabindex="-1"></a><span class="fu">summary</span>(imputed_data_pmm)</span></code></pre></div>
+<pre><code>## Class: mids
+## Number of multiple imputations:  5 
+## Imputation methods:
+##   Ozone Solar.R    Wind    Temp   Month     Day 
+##   &quot;pmm&quot;  &quot;mean&quot;      &quot;&quot;      &quot;&quot;      &quot;&quot;      &quot;&quot; 
+## PredictorMatrix:
+##         Ozone Solar.R Wind Temp Month Day
+## Ozone       0       1    1    1     1   1
+## Solar.R     1       0    1    1     1   1
+## Wind        1       1    0    1     1   1
+## Temp        1       1    1    0     1   1
+## Month       1       1    1    1     0   1
+## Day         1       1    1    1     1   0</code></pre>
 
 </div>
 </div>
