@@ -1,0 +1,149 @@
+# Distributions and Measures
+
+This chapter focuses on distributions, how they are defined, and how they can be
+summarized.
+
+```{r}
+# Load libraries
+library(ggplot2)
+library(readr)
+```
+
+
+## Distributions
+
+A distribution shows how the distinct values in a dataset are distributed across
+the observations in a dataset. We make a distinction between
+**empirical distributions** and **theoretical distributions**. An empirical
+distribution is based on observed data, while a theoretical distribution is
+based on theory (i.e., a probability mass function or a probability density
+function).
+
+### Empirical Distribution
+
+We use the **heart** dataset to illustrate how an empirical distribution is
+constructed.
+
+```{r}
+# Read the heart dataset
+heart <- readr::read_csv(
+  file = fs::path(fs::path_wd(), "data", "heart.xls"),
+  show_col_types = FALSE
+)
+heart$Sex <- factor(heart$Sex)
+```
+
+This dataset contains the variable $Sex$ denoting the sex of the patient. There
+are two distinct observed values for this variable: $M$ and $F$. If we count
+the number of observations per distinct observed value of $Sex$, then we obtain
+an empirical distribution. The dataset contains 193 observations with the value
+$F$ for the variable $Sex$ and 725 observations with the value $M$ for the
+variable $Sex$.
+
+```{r}
+table(heart$Sex)
+```
+
+This empirical distribution can be visualized using a barchart:
+
+```{r echo=FALSE}
+ggplot(heart, aes(x = Sex)) +
+  geom_bar() +
+  theme_classic() +
+  geom_text(stat = "count", aes(label = after_stat(count)), vjust = -0.5, size = 3.5) +
+  labs(title = "Empirical distribution of sex")
+```
+
+The above example shows the empirical distribution of a quantitative variable,
+so a discrete distribution. The empirical distribution of a quantitative
+variable is a continuous distribution. As an example, we look at the
+distribution of the variable $Cholesterol$. Again, we take the set of distinct
+observed values of $Cholesterol$ and check how these are distributed across the
+observations in the dataset. Or, in other words, we count the number of
+observations per distinct observed value of $Cholesterol$.
+
+```{r}
+table(heart$Cholesterol)
+```
+
+Again, a figure helps us to better visualize the distribution:
+
+```{r}
+ggplot(heart, aes(x = Cholesterol)) +
+  geom_histogram(bins = 40) +
+  labs(title = "Distribution of Cholesterol") +
+  theme_classic()
+```
+
+Immediately, we see that a fraction of the observations shows the value $0$ for
+$Cholesterol$, which should be investigated.
+
+### Theoretical Distribution
+
+A theoretical distribution shows how the values in the sample space of a
+variable are theoretically distributed across the observations in a dataset. A
+theoretical distribution is defined by a **probability mass function** (PMF) for
+categorical variables or a **probability density function** (PDF) for
+quantitative variables. A well-known example of such a distribution is the
+normal distribution, which is defined by the following PDF:
+
+$$
+f(X, \mu, \sigma) = \frac{1}{\sqrt{2 \pi \sigma^2}} \cdot e^{\frac{-(X - \mu)^2}{2 \sigma^2}}
+$$
+
+This PDF can be used to construct a normal distribution with $\mu = 50$ and
+$\sigma = 5$.
+
+```{r}
+ggplot(data.frame(x = c(25, 75)), aes(x)) +  # Define x-axis range
+  stat_function(fun = dnorm, args = list(mean = 50, sd = 5), color = "blue", size = 1) +
+  labs(title = "Normal Distribution", x = "Value", y = "Density") +
+  theme_classic()
+
+```
+
+## Measures
+
+Distributions as defined above help us understand how a variable behaves. We
+can now use measures to summarize these distributions. There are
+**measures of center** and **measures of dispersion**. The first tell us 
+something about where the bulk of the observations are, while the latter tells
+us something about how much variability there is in the dataset. It is important
+to assess these measures in combination with figures that visualize the
+distribution of the variable.
+
+### Measures of Center
+
+There are three measures of center: mean, median, and mode. The mean is
+calculated as follows:
+
+$$
+\bar{X} = \frac{1}{n} \cdot \sum_{i = 1}^{n} X_i
+$$
+
+The mean is not necessarily a value that is observed in the dataset. It is also
+sensitive to outliers. The median is obtained by sorting all observed values
+from smallest value to greatest value and selecting a value that splits this
+orderd list in two. So, half of the observations have an observed value that is
+less than or equal to the median, and half of the observations have an observed
+value that is greater than or equal to the median. The median is not sensitive
+to outliers. The mode is the value that most frequently occurs.
+
+Let us get back to the above example investigating the distribution of
+$Cholesterol$. The mean of `r round(mean(heart$Cholesterol), 2)` is smaller
+than the median of `r round(median(heart$Cholesterol), 2)`.
+
+```{r}
+mean(heart$Cholesterol)
+```
+
+```{r}
+median(heart$Cholesterol)
+```
+
+```{r}
+names(sort(-table(heart$Cholesterol)))[1]
+```
+
+
+

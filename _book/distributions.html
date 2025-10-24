@@ -4,12 +4,12 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Page not found | Stats For You</title>
+  <title>4 Distributions | Stats For You</title>
   <meta name="description" content="<p>This book provides an introduction to various topics in statistics and
 probability.</p>" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Page not found | Stats For You" />
+  <meta property="og:title" content="4 Distributions | Stats For You" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="<p>This book provides an introduction to various topics in statistics and
@@ -17,7 +17,7 @@ probability.</p>" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Page not found | Stats For You" />
+  <meta name="twitter:title" content="4 Distributions | Stats For You" />
   
   <meta name="twitter:description" content="<p>This book provides an introduction to various topics in statistics and
 probability.</p>" />
@@ -33,7 +33,7 @@ probability.</p>" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
+<link rel="prev" href="missingness.html"/>
 
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -173,17 +173,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>3.2.4</b> Missingness Not at Random</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html"><i class="fa fa-check"></i><b>4</b> Distributions and Measures</a>
+<li class="chapter" data-level="4" data-path="distributions.html"><a href="distributions.html"><i class="fa fa-check"></i><b>4</b> Distributions</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html#distributions"><i class="fa fa-check"></i><b>4.1</b> Distributions</a>
-<ul>
-<li class="chapter" data-level="4.1.1" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html#empirical-distribution"><i class="fa fa-check"></i><b>4.1.1</b> Empirical Distribution</a></li>
-<li class="chapter" data-level="4.1.2" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html#theoretical-distribution"><i class="fa fa-check"></i><b>4.1.2</b> Theoretical Distribution</a></li>
-</ul></li>
-<li class="chapter" data-level="4.2" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html#measures"><i class="fa fa-check"></i><b>4.2</b> Measures</a>
-<ul>
-<li class="chapter" data-level="4.2.1" data-path="distributions-and-measures.html"><a href="distributions-and-measures.html#measures-of-center"><i class="fa fa-check"></i><b>4.2.1</b> Measures of Center</a></li>
-</ul></li>
+<li class="chapter" data-level="4.1" data-path="distributions.html"><a href="distributions.html#introduction-1"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -205,18 +197,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="page-not-found" class="section level1">
-<h1>Page not found</h1>
-<p>The page you requested cannot be found (perhaps it was moved or renamed).</p>
-<p>You may want to try searching to find the page's new location, or use
-the table of contents to find the page you are looking for.</p>
+<div id="distributions" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Distributions<a href="distributions.html#distributions" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This chapter focuses on distributions, how they are defined, and how they can be
+summarized.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="distributions.html#cb1-1" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb1-2"><a href="distributions.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="distributions.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div>
+<div id="introduction-1" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Introduction<a href="distributions.html#introduction-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A distribution shows how the distinct values in a dataset are distributed across
+the observations in a dataset. We make a distinction between
+<strong>empirical distributions</strong> and <strong>theoretical distributions</strong>. An empirical
+distribution is based on observed data, while a theoretical distribution is
+based on theory (i.e., a probability mass function or a probability density
+function).</p>
+<p>We use the <strong>heart</strong> dataset to illustrate how an empirical distribution is
+constructed.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="distributions.html#cb2-1" tabindex="-1"></a><span class="co"># Read the heart dataset</span></span>
+<span id="cb2-2"><a href="distributions.html#cb2-2" tabindex="-1"></a>heart <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(</span>
+<span id="cb2-3"><a href="distributions.html#cb2-3" tabindex="-1"></a>  <span class="at">file =</span> fs<span class="sc">::</span><span class="fu">path</span>(fs<span class="sc">::</span><span class="fu">path_wd</span>(), <span class="st">&quot;data&quot;</span>, <span class="st">&quot;heart.xls&quot;</span>),</span>
+<span id="cb2-4"><a href="distributions.html#cb2-4" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-5"><a href="distributions.html#cb2-5" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="distributions.html#cb2-6" tabindex="-1"></a>heart<span class="sc">$</span>Sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(heart<span class="sc">$</span>Sex)</span></code></pre></div>
+<p>This dataset contains the variable <span class="math inline">\(Sex\)</span> denoting the sex of the patient. There
+are two distinct observed values for this variable: <span class="math inline">\(M\)</span> and <span class="math inline">\(F\)</span>. If we count
+the number of observations per distinct observed value of <span class="math inline">\(Sex\)</span>, then we obtain
+an empirical distribution. The dataset contains 193 observations with the value
+<span class="math inline">\(F\)</span> for the variable <span class="math inline">\(Sex\)</span> and 725 observations with the value <span class="math inline">\(M\)</span> for the
+variable <span class="math inline">\(Sex\)</span>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="distributions.html#cb3-1" tabindex="-1"></a><span class="fu">table</span>(heart<span class="sc">$</span>Sex)</span></code></pre></div>
+<pre><code>## 
+##   F   M 
+## 193 725</code></pre>
+<p>This empirical distribution can be visualized using a barchart:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
+<a href="missingness.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
@@ -248,7 +272,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/%s",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/07-distributions.Rmd",
 "text": "Edit"
 },
 "history": {
