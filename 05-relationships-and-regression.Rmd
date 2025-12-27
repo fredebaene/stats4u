@@ -1,0 +1,423 @@
+# Relationships and Regression
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tibble))
+```
+
+```{r echo=FALSE}
+data(trees)
+```
+
+## Relationships
+
+Two random variables are related when the changes in one variable are consistently associated with the changes in another variable. Or, in other words, when the two random variables tend to change together. We say that the two variables have a relationship (or relation). As an example, let us look at the trees dataset and visualize the relationship between height and volume of trees.
+
+```{r}
+ggplot(trees, aes(x = Height, y = Volume)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = "y ~ x", se = FALSE) +
+  theme_classic()
+```
+
+## Pearson Correlation Coefficient
+
+The Pearson correlation coefficient is a statistical measure that quantifies the
+direction and strength of a linear relationship between two variables. The sign
+of the Pearson correlation coefficient indicates the direction and the absolute
+value, ranging from $0$ to $1$, indicates the strength of the relationship.
+
+### Calculating Coefficient
+
+The Pearson correlation coefficient is calculated as follows:
+
+$$
+r = \frac{Cov(X, Y)}{\sigma_{X} \sigma_{Y}} = \frac{\sigma_{XY}}{\sigma_{X} \sigma_{Y}}
+$$
+
+Dividing the covariance between $X$ and $Y$ by the product of the standard
+deviations of $X$ and $Y$ ensures that the correlation coefficient is not
+dependent on the scale of the variables $X$ and $Y$ and that $r \in [-1, +1]$.
+If $r = +1$, then all of the data falls on a single straight line with a
+positive slope. Some examples:
+
+```{r}
+# Create a sample dataset
+dat <- tibble(X = runif(n = 20, min = 10, max = 80))
+dat <- add_column(dat, Y1 = 0.30*dat$X)
+dat <- add_column(dat, Y2 = 3.00*dat$X)
+dat <- add_column(dat, Y3 = 30.0*dat$X)
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_smooth(method = "lm", aes(y = Y1), formula = "y ~ x", color = "darkred", se = F) +
+  geom_point(aes(y = Y2), color = "darkgreen") +
+  geom_smooth(method = "lm", aes(y = Y2), formula = "y ~ x", color = "darkgreen", se = F) +
+  geom_point(aes(y = Y3), color = "darkblue") +
+  geom_smooth(method = "lm", aes(y = Y3), formula = "y ~ x", color = "darkblue", se = F) +
+  theme_classic()
+```
+
+Note that these examples illustrate a functional relationship. The relationship
+between $X$ and each of the $Y$ variables ($Y1$, $Y2$, $Y3$) can be described
+by an equation and all the observations fall on the line of the relationship. If
+we compute the Pearson correlation coefficients for each of these three pairs
+of variables, we see that it is each time equal to $r = +1$.
+
+```{r}
+cor(x = dat$X, y = dat$Y1, method = "pearson")
+cor(x = dat$X, y = dat$Y2, method = "pearson")
+cor(x = dat$X, y = dat$Y3, method = "pearson")
+```
+
+If we now use a negative slope, we will see that the Pearson correlation
+coefficient for each of these functional relationships equals $r = -1$.
+
+```{r}
+# Create a sample dataset
+dat <- tibble(X = runif(n = 20, min = 10, max = 80))
+dat <- add_column(dat, Y1 = -0.30*dat$X)
+dat <- add_column(dat, Y2 = -3.00*dat$X)
+dat <- add_column(dat, Y3 = -30.0*dat$X)
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_smooth(method = "lm", aes(y = Y1), formula = "y ~ x", color = "darkred", se = F) +
+  geom_point(aes(y = Y2), color = "darkgreen") +
+  geom_smooth(method = "lm", aes(y = Y2), formula = "y ~ x", color = "darkgreen", se = F) +
+  geom_point(aes(y = Y3), color = "darkblue") +
+  geom_smooth(method = "lm", aes(y = Y3), formula = "y ~ x", color = "darkblue", se = F) +
+  theme_classic()
+```
+
+```{r}
+cor(x = dat$X, y = dat$Y1, method = "pearson")
+cor(x = dat$X, y = dat$Y2, method = "pearson")
+cor(x = dat$X, y = dat$Y3, method = "pearson")
+```
+
+We see that the absolute value of the Pearson correlation coefficient equals $1$
+for the six examples. This indicates that these are very strong linear
+relationships. But what does it mean for a relationship between two variables to
+be strong? The strength of a relationship between two variables is an indication
+of how much information a given value for one variables gives us about the value
+of the other variable. If we see that for a given value of $X$ the range of
+possible or observed values for $Y$ is relatively large, and this for every
+level of $X$, then we cannot say that $X$ carries much information about $Y$.
+If, however, the range of observed values for $Y$ is relatively small for every
+level of $X$, then we can state that $X$ carries a lot of information about the
+value of $Y$ and the relationship is quite strong.
+
+We will showcase with a few examples.
+
+```{r}
+# Create a sample dataset
+dat <- tibble(X = runif(100, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 + 5*dat$X + rnorm(100, sd = 1))
+dat <- add_column(dat, Y2 = -5 + 5*dat$X + rnorm(100, sd = 10))
+dat <- add_column(dat, Y3 = -5 + 5*dat$X + rnorm(100, sd = 25))
+```
+
+For the following three positive linear relationships, we see that the amount of
+scatter around the regression line is different for the three examples. The
+amount of scatter around the regression line is an indication of how much
+information the variable $X$ carries about the variable $Y$.
+
+If we look at $X = 35$, then we see that for $Y1$, the range of observed
+values for $Y1$ is relatively small. For $Y2$, the range of observed $Y2$
+values is larger. And for $Y3$, the range of observed $Y3$ values is
+relatively large. Therefore, we can state that the relationship between $X$ and
+$Y1$ is strong, between $X$ and $Y2$ is moderate, and between $X$ and $Y3$ is
+weak.
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = 5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y2), color = "darkgreen") +
+  geom_abline(intercept = -5, slope = 5, color = "darkgreen") +
+  theme_classic()
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y3), color = "darkblue") +
+  geom_abline(intercept = -5, slope = 5, color = "darkblue") +
+  theme_classic()
+```
+
+The absolute values of the Pearson correlation coefficient are indicative of
+the strength of the linear relationship:
+
+```{r}
+cor(x = dat$X, y = dat$Y1, method = "pearson")
+cor(x = dat$X, y = dat$Y2, method = "pearson")
+cor(x = dat$X, y = dat$Y3, method = "pearson")
+```
+
+### Hypothesis Testing
+
+All of the above examples on the Pearson correlation coefficient made use of
+samples of data to calculate the correlation. When analyzing data, we must be
+be aware that often we are analyzing a sample of data which is drawn from a
+larger population. For this population, there is a true Pearson correlation
+coefficient $\rho$, which is an unknown constant. To estimate $\rho$, we draw
+a random sample from the population and use an estimator to produce an estimate
+$\hat{\rho}$. We have already seen the estimator in this chapter. It is:
+
+$$
+r = \frac{Cov(X, Y)}{\sigma_{X} \sigma_{Y}} = \frac{\sigma_{XY}}{\sigma_{X} \sigma_{Y}}
+$$
+
+We must remember that the Pearson correlation coefficient $r$ is an estimator
+for the true Pearson correlation coefficient $\rho$ in the population. The
+latter is an unknown constant. We want to estimate this unknown constant and
+therefore we sample data from the population and analyze this data to produce an
+estimate of the true value of $\rho$.
+
+Using this, we can perform a $t$-test to test for the existence of a linear
+relationship between two variables. The hypotheses for this $t$-test state:
+
+$$
+H_0 : \rho = 0
+$$
+
+and:
+
+$$
+H_a : \rho \neq 0
+$$
+
+The test statistic $T$ for this test is:
+
+$$
+T = \frac{r \cdot \sqrt{n - 2}}{\sqrt{1 - R^2}}
+$$
+
+The test statistic $T$ follows a $t$-distribution with $n - 2$ degrees of
+freedom. We can also perform an exact hypothesis test.
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+cor.test(x = dat$X, y = dat$Y2, method = "pearson", exact = TRUE)
+cor.test(x = dat$X, y = dat$Y3, method = "pearson", exact = TRUE)
+```
+
+In these three examples, we see that the $p$-values are all statistically
+significant at $\alpha = 0.05$. If we look at the test statistic $T$, we see
+that both sample size $n$ and the estimate $r$ affect the test statistic. We
+see that larger sample sizes and larger estimates of $\rho$ result in a larger
+test statistic.
+
+In the following example, we keep the random part of the relationship relatively
+small. So we are drawing from a population with a strong negative linear
+relationship. We will use varying sample sizes (from small to)
+
+```{r}
+# Create a sample dataset
+n <- 3
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 1))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+```{r}
+# Create a sample dataset
+n <- 30
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 1))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+```{r}
+# Create a sample dataset
+n <- 50
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 1))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+We will now increae the variability around the regression line of the linear
+relationship.
+
+```{r}
+# Create a sample dataset
+n <- 3
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 30))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+```{r}
+# Create a sample dataset
+n <- 30
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 30))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+```{r}
+# Create a sample dataset
+n <- 50
+dat <- tibble(X = runif(n, min = 20, max = 40))
+dat <- add_column(dat, Y1 = -5 - 5*dat$X + rnorm(n, sd = 30))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y1), color = "darkred") +
+  geom_abline(intercept = -5, slope = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y1, method = "pearson", exact = TRUE)
+```
+
+### No Relationship
+
+Assume there is no relationship between $X$ and $Y$, then the true Pearson
+correlation coefficient $\rho = 0$. Therefore, the null hypothesis should not
+be rejected.
+
+```{r}
+# Create a sample dataset
+dat <- tibble(X = runif(100, min = 20, max = 40))
+dat <- add_column(dat, Y = -5 + rnorm(100, sd = 1))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X)) +
+  geom_point(aes(y = Y), color = "darkred") +
+  geom_hline(yintercept = -5, color = "darkred") +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y, method = "pearson", exact = TRUE)
+```
+
+Another example.
+
+```{r}
+# Create a sample dataset
+dat <- tibble(X = rnorm(100), Y = rnorm(100))
+```
+
+```{r}
+# Visualize the relationships
+ggplot(dat, aes(x = X, y = Y)) +
+  geom_point(color = "darkred") +
+  geom_smooth(method = "loess", formula = "y ~ x",, se = F) +
+  theme_classic()
+```
+
+```{r}
+cor.test(x = dat$X, y = dat$Y, method = "pearson", exact = TRUE)
+```
+
+### Case Study
+
+If we go back to our case study from the trees dataset.
+
+```{r}
+ggplot(trees, aes(x = Height, y = Volume)) +
+  geom_point() +
+  geom_smooth(method = "loess", formula = "y ~ x", se = FALSE) +
+  theme_classic()
+```
+
+We can see a positive linear trend. We calculate an estimate of the true Pearson
+correlation coefficient and test for:
+
+$$
+H_0 : \rho = 0 \text{ vs. } H_a : \rho \neq 0
+$$
+
+```{r}
+cor.test(x = trees$Height, y = trees$Volume, method = "pearson")
+```
+
+There seems to be a positive linear relationship between the height and the
+volume of trees ($r = 0.598$, $p < 0.001$).
+
+Remember:
+
+**_The sign of the Pearson correlation coefficient informs us about the direction
+of the linear relationship, while the absolute value informs us about the strength
+of the linear relationship._**
+
+
+
+
