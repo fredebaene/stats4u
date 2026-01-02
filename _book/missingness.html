@@ -26,7 +26,7 @@ probability.</p>" />
 <meta name="author" content="Frederick De Baene" />
 
 
-<meta name="date" content="2025-12-27" />
+<meta name="date" content="2026-01-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -193,7 +193,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html"><i class="fa fa-check"></i><b>5</b> Relationships and Regression</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#relationships"><i class="fa fa-check"></i><b>5.1</b> Relationships</a></li>
-<li class="chapter" data-level="5.2" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#pearson-correlation-coefficient"><i class="fa fa-check"></i><b>5.2</b> Pearson Correlation Coefficient</a></li>
+<li class="chapter" data-level="5.2" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#pearson-correlation-coefficient"><i class="fa fa-check"></i><b>5.2</b> Pearson Correlation Coefficient</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#calculating-coefficient"><i class="fa fa-check"></i><b>5.2.1</b> Calculating Coefficient</a></li>
+<li class="chapter" data-level="5.2.2" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#hypothesis-testing"><i class="fa fa-check"></i><b>5.2.2</b> Hypothesis Testing</a></li>
+<li class="chapter" data-level="5.2.3" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#no-relationship"><i class="fa fa-check"></i><b>5.2.3</b> No Relationship</a></li>
+<li class="chapter" data-level="5.2.4" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#orange-dataset"><i class="fa fa-check"></i><b>5.2.4</b> Orange Dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#spearman-rank-correlation"><i class="fa fa-check"></i><b>5.3</b> Spearman Rank Correlation</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -278,9 +285,9 @@ BMI \sim \mathcal{N}(25, 9).
 <span id="cb42-22"><a href="missingness.html#cb42-22" tabindex="-1"></a>)</span></code></pre></div>
 <p>We can see that the conditional distributions of weight given sex have different
 means.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-65-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
 <p>But the conditional distributions of BMI are the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
 </div>
 <div id="missingness-completely-at-random" class="section level3 hasAnchor" number="4.2.2">
 <h3><span class="header-section-number">4.2.2</span> Missingness Completely at Random<a href="missingness.html#missingness-completely-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -296,7 +303,7 @@ values is the same.</p>
 <p>Because the observations with missing values are a random subset of all
 observations, we should see no difference between the distributions of missing
 and observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-68-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 </div>
 <div id="missingness-at-random" class="section level3 hasAnchor" number="4.2.3">
 <h3><span class="header-section-number">4.2.3</span> Missingness at Random<a href="missingness.html#missingness-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -322,7 +329,7 @@ that sex also affects the probability of missingness.</p>
 <p>Inspection of the distributions of observed and missing values shows us that the
 distribution of missing values is shifted to the left compared to the
 distribution of observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <p>Because the probability of missingness is higher for women then for men, the
 fraction of patients with a missing weight that are female is higher than the
 fraction of patients with a missing weight that are men. This affects the
@@ -330,7 +337,7 @@ distribution of the missing weights, i.e., shifting the distribution to the
 left. Assume that sex is the only factor that affects the probability of
 missingness, then, conditional on sex, the distribution of observed values and
 missing values is the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-71-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
 <p>We can see that, conditional on sex, the distribution of observed and missing
 weights is the same. This illustrates the concept of missingness at random. Sex
 is the factor that influences both the probability of missingness and the
@@ -348,7 +355,7 @@ by a factor that is recorded, but is affected by factors that are not recorded
 or even by the outcome itself. For this missingness pattern, we will not focus
 on the weight of the patient but on the patient’s BMI. The distribution of BMI
 is the same for women and for men:</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
 <p>However, we could argue the following: if a patient visits the GP, then the GP
 will more likely weigh the patient if he/she seems overweight or obese. We could
 make the same argument for underweight patients, but for the sake of
@@ -394,7 +401,7 @@ overweight and obese patients. Based on BMI, we can classify patients as:</p>
 <span id="cb48-12"><a href="missingness.html#cb48-12" tabindex="-1"></a>)</span>
 <span id="cb48-13"><a href="missingness.html#cb48-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>First, let’s have a look at the distribution of BMI conditional on missingness.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-77-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
 <p>The distribution of the missing BMI values is shifted to the left compared to
 the distribution of the observed BMI values. This makes sense as the probability
 of the weight being recorded, and thus the BMI being calculated, is bigger as
@@ -403,7 +410,7 @@ a patient tends to be overweight or obese.</p>
 missigness, nor is there any other factor that influences the probability of
 missingness, only the outcome itself. Therefore, conditioning on sex, will not
 eliminate the difference in distribution between observed and missing values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
 
 </div>
 </div>
