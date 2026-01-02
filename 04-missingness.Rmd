@@ -1,13 +1,17 @@
 # Missingness
 
 ```{r}
-library(mice)
-library(VIM)
+suppressPackageStartupMessages(library(mice))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(ggcorrplot))
+suppressPackageStartupMessages(library(ggmice))
+suppressPackageStartupMessages(library(VIM))
+suppressPackageStartupMessages(library(patchwork))
 ```
 
 ## Introduction
 
-When fitting models to a particular data set, missingness is of particular 
+When fitting models to a particular dataset, missingness is of particular 
 concern. Missing data can lead to biased coefficient estimates. Therefore, a 
 good understanding of the different missingness patterns, their implications on
 model fitting, and how to deal with them is essential. There are three 
@@ -17,7 +21,7 @@ missingness patterns (missingness mechanisms):
 * missingness at random (MAR)
 * missingness not at random (MNAR).
 
-In the following sections, we will use a simulated data set containing data on 
+In the following sections, we will use a simulated dataset containing data on 
 patients and their weight and BMI to illustrate these different mechanisms.
 
 ## Missingess Patterns
@@ -26,7 +30,7 @@ patients and their weight and BMI to illustrate these different mechanisms.
 
 Our simulation setup involves simulating the weight of patients visiting their
 general physician (GP) for a checkup. For each patient, the sex (male, female)
-is always recorded. The data set is balanced in terms of sex, and we assume a
+is always recorded. The dataset is balanced in terms of sex, and we assume a
 normally distributed weight (kg) with a mean weight $\mu_{f} = 65$ for women and
 $\mu_{m} = 78$ for men. The standard deviation $\sigma = 10$ is the same for
 both sexes:
@@ -49,7 +53,7 @@ BMI \sim \mathcal{N}(25, 9).
 $$
 
 ```{r}
-# Simulate patient data. The data set contains 10000 observations, and is 
+# Simulate patient data. The dataset contains 10000 observations, and is 
 # balanced in terms of sex.
 set.seed(123)
 n <- 10000
@@ -78,7 +82,8 @@ means.
 
 ```{r echo = FALSE}
 ggplot(weights, aes(x = weight)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.1, aes(y = after_stat(density))) +
+  geom_density(color = "darkred") +
   facet_wrap(~ sex, nrow = 2, ncol = 1) +
   theme_bw() +
   labs(
@@ -124,7 +129,8 @@ and observed values.
 
 ```{r echo = FALSE}
 ggplot(weights, aes(x = weight)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.1, aes(y = after_stat(density))) +
+  geom_density(color = "darkred") +
   facet_wrap(~ mcar, nrow = 2, ncol = 1) +
   theme_bw() +
   labs(
@@ -165,7 +171,8 @@ distribution of observed values.
 
 ```{r echo = FALSE}
 ggplot(weights, aes(x = weight)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.1, aes(y = after_stat(density))) +
+  geom_density(color = "darkred") +
   facet_wrap(~ mar, nrow = 2, ncol = 1) +
   theme_bw() +
   labs(
@@ -185,7 +192,8 @@ missing values is the same.
 
 ```{r echo = FALSE}
 ggplot(weights, aes(x = weight)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.1, aes(y = after_stat(density))) +
+  geom_density(color = "darkred") +
   facet_grid(rows = vars(mar), cols = vars(sex)) +
   theme_bw() +
   labs(
@@ -216,7 +224,8 @@ is the same for women and for men:
 
 ```{r echo = FALSE}
 ggplot(weights, aes(x = bmi)) +
-  geom_histogram(bins = 50) +
+  geom_histogram(bins = 50, color = "black", alpha = 0.1, aes(y = after_stat(density))) +
+  geom_density(color = "darkred") +
   facet_wrap(~ sex, nrow = 2, ncol = 1) +
   theme_bw() +
   labs(
@@ -333,8 +342,8 @@ it is important to consider bias and precision. We will come back to this.
 
 ### Example Case
 
-To demonstrate the different approaches, we use the data set on the weights. The
-data set contains the weight for all students enrolled in a particular school. 
+To demonstrate the different approaches, we use the dataset on the weights. The
+dataset contains the weight for all students enrolled in a particular school. 
 The population mean for the weight can be calculated and is:
 
 ```{r echo = FALSE}
@@ -856,4 +865,196 @@ imputed_data_pmm <- mice::mice(
 summary(imputed_data_pmm)
 ```
 
+## Case Study: Air Quality
 
+We will work out a case study using the **air quality** dataset.
+
+```{r}
+data("airquality")
+```
+
+### Missing Data Patterns
+
+We explore the missingness in the dataset. We can visualize the missing data
+patterns using the **plot_pattern()** function from the **ggmice** package. We
+see there is a total of 44 missing values. There are 37 missing values for the
+variable **Ozone** and seven missing values for the variable **Solar.R**.
+
+```{r}
+ggmice::plot_pattern(data = airquality, square = F, rotate = T)
+```
+
+We can also create an influx-outflux plot. The **influx** of a variable shows
+how well its missing values connect to the observed values of other variables.
+The **outflux** of a variable shows how well its observed values connect to the
+missing values of other variables.
+
+```{r}
+ggmice::plot_flux(data = airquality, label = F)
+```
+
+### Relations
+
+The variables with missing values are **Ozone** and **Solar.R**. We can further
+investigate their relationship with the other variables to establish appropriate
+imputation models.
+
+First, we can also plot the correlations between the variables. These are the
+Pearson correlation coefficients, which is a statistical measure to quantify
+direction and strength of a linear relationship between two variables.
+Therefore, it could also be beneficial to obtain Spearman rank correlation
+coefficients, for which we would rather use the **ggcorrplot** package.
+
+```{r}
+# Create a correlation (Pearson) matrix
+ggmice::plot_corr(data = airquality, label = T, diagonal = T, rotate = T)
+```
+
+Let us now use **ggcorrplot** to create the same correlation matrix.
+
+```{r}
+# Create a correlation (Pearson) matrix
+p_corr <- cor(x = airquality, use = "pairwise.complete.obs", method = "pearson")
+ggcorrplot::ggcorrplot(corr = p_corr, lab = T, digits = 3)
+```
+
+Because we use base R and **ggcorrplot** we have more flexibility and can also
+use the Spearman rank correlation coefficients.
+
+```{r}
+# Create a correlation (Spearman) matrix
+s_corr <- cor(x = airquality, use = "pairwise.complete.obs", method = "spearman")
+ggcorrplot::ggcorrplot(corr = s_corr, lab = T, digits = 3)
+```
+
+Let us look at the relationship of **Ozone** with the other variables. There
+appears to be a relationship between **Ozone** and the variables **Wind** and
+**Temp**.
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Ozone, Solar.R)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Ozone, Wind)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Ozone, Temp)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Ozone, Month)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Ozone, Day)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+Let us look at the relationship of **Solar.R** with the other variables.
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Solar.R, Ozone)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Solar.R, Wind)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Solar.R, Temp)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Solar.R, Month)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+```{r}
+ggmice::ggmice(data = airquality, aes(Solar.R, Day)) +
+  geom_point() +
+  geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+```
+
+### Multiple Imputation
+
+We wil now impute the data.
+
+```{r}
+# Impute missing values using MICE
+imp <- mice::mice(data = airquality, printFlag = F)
+```
+
+Let us inspect the imputed data. The following figures show one blue dot for
+every observed value and one red dot for every imputed value. So, if we choose
+to obtain five imputed datasets, then there will be five imputed values for
+every missing value.
+
+```{r}
+ggmice::ggmice(data = imp, aes(.imp, Ozone)) +
+  geom_jitter(height = 0, width = 0.25) +
+  geom_boxplot(width = 0.5, size = 1, alpha = 0.75, outlier.shape = NA) +
+  labs(x = "Imputation number")
+```
+
+```{r}
+figs <- purrr::map(c("Solar.R", "Wind", "Temp"), ~ {
+  
+  fig_1 <- ggmice::ggmice(data = airquality, aes(Ozone, .data[[.x]])) +
+    geom_point() +
+    geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+  
+  fig_2 <- ggmice::ggmice(data = imp, aes(Ozone, .data[[.x]])) +
+    geom_point() +
+    geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+  
+  fig_1 + fig_2
+  
+})
+
+for (fig in figs)
+  print(fig)
+```
+
+```{r}
+ggmice::ggmice(data = imp, aes(.imp, Solar.R)) +
+  geom_jitter(height = 0, width = 0.25) +
+  geom_boxplot(width = 0.5, size = 1, alpha = 0.75, outlier.shape = NA) +
+  labs(x = "Imputation number")
+```
+
+```{r}
+figs <- purrr::map(c("Ozone", "Wind", "Temp"), ~ {
+  
+  fig_1 <- ggmice::ggmice(data = airquality, aes(Solar.R, .data[[.x]])) +
+    geom_point() +
+    geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+  
+  fig_2 <- ggmice::ggmice(data = imp, aes(Solar.R, .data[[.x]])) +
+    geom_point() +
+    geom_smooth(formula = "y ~ x", method = "loess", se = F, color = "black")
+  
+  fig_1 + fig_2
+  
+})
+
+for (fig in figs)
+  print(fig)
+```
