@@ -4,12 +4,12 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Missingness | Stats For You</title>
+  <title>4 Missingness | Stats For You</title>
   <meta name="description" content="<p>This book provides an introduction to various topics in statistics and
 probability.</p>" />
   <meta name="generator" content="bookdown 0.41 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Missingness | Stats For You" />
+  <meta property="og:title" content="4 Missingness | Stats For You" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="<p>This book provides an introduction to various topics in statistics and
@@ -17,7 +17,7 @@ probability.</p>" />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Missingness | Stats For You" />
+  <meta name="twitter:title" content="4 Missingness | Stats For You" />
   
   <meta name="twitter:description" content="<p>This book provides an introduction to various topics in statistics and
 probability.</p>" />
@@ -26,15 +26,15 @@ probability.</p>" />
 <meta name="author" content="Frederick De Baene" />
 
 
-<meta name="date" content="2025-10-15" />
+<meta name="date" content="2026-01-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="logistic-models-and-deviance.html"/>
-
+<link rel="prev" href="logistic-regression.html"/>
+<link rel="next" href="relationships-and-regression.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -162,24 +162,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="logistic-models-and-deviance.html"><a href="logistic-models-and-deviance.html#deviance"><i class="fa fa-check"></i><b>2.3</b> Deviance</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="missingness.html"><a href="missingness.html"><i class="fa fa-check"></i><b>3</b> Missingness</a>
+<li class="chapter" data-level="3" data-path="logistic-regression.html"><a href="logistic-regression.html"><i class="fa fa-check"></i><b>3</b> Logistic Regression</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="missingness.html"><a href="missingness.html#introduction"><i class="fa fa-check"></i><b>3.1</b> Introduction</a></li>
-<li class="chapter" data-level="3.2" data-path="missingness.html"><a href="missingness.html#missingess-patterns"><i class="fa fa-check"></i><b>3.2</b> Missingess Patterns</a>
+<li class="chapter" data-level="3.1" data-path="logistic-regression.html"><a href="logistic-regression.html#ordinary-logistic-regression"><i class="fa fa-check"></i><b>3.1</b> Ordinary Logistic Regression</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="missingness.html"><a href="missingness.html#simulation-setup"><i class="fa fa-check"></i><b>3.2.1</b> Simulation Setup</a></li>
-<li class="chapter" data-level="3.2.2" data-path="missingness.html"><a href="missingness.html#missingness-completely-at-random"><i class="fa fa-check"></i><b>3.2.2</b> Missingness Completely at Random</a></li>
-<li class="chapter" data-level="3.2.3" data-path="missingness.html"><a href="missingness.html#missingness-at-random"><i class="fa fa-check"></i><b>3.2.3</b> Missingness at Random</a></li>
-<li class="chapter" data-level="3.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>3.2.4</b> Missingness Not at Random</a></li>
+<li class="chapter" data-level="3.1.1" data-path="logistic-regression.html"><a href="logistic-regression.html#context"><i class="fa fa-check"></i><b>3.1.1</b> Context</a></li>
+<li class="chapter" data-level="3.1.2" data-path="logistic-regression.html"><a href="logistic-regression.html#model-fitting"><i class="fa fa-check"></i><b>3.1.2</b> Model Fitting</a></li>
+<li class="chapter" data-level="3.1.3" data-path="logistic-regression.html"><a href="logistic-regression.html#interpretation"><i class="fa fa-check"></i><b>3.1.3</b> Interpretation</a></li>
+<li class="chapter" data-level="3.1.4" data-path="logistic-regression.html"><a href="logistic-regression.html#maximum-likelihood-estimation"><i class="fa fa-check"></i><b>3.1.4</b> Maximum Likelihood Estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="missingness.html"><a href="missingness.html#handling-missing-data"><i class="fa fa-check"></i><b>3.3</b> Handling Missing Data</a>
+<li class="chapter" data-level="3.2" data-path="logistic-regression.html"><a href="logistic-regression.html#conditional-logistic-regression"><i class="fa fa-check"></i><b>3.2</b> Conditional Logistic Regression</a>
 <ul>
-<li class="chapter" data-level="3.3.1" data-path="missingness.html"><a href="missingness.html#example-case"><i class="fa fa-check"></i><b>3.3.1</b> Example Case</a></li>
-<li class="chapter" data-level="3.3.2" data-path="missingness.html"><a href="missingness.html#complete-case-analysis"><i class="fa fa-check"></i><b>3.3.2</b> Complete Case Analysis</a></li>
-<li class="chapter" data-level="3.3.3" data-path="missingness.html"><a href="missingness.html#mean-value-imputation"><i class="fa fa-check"></i><b>3.3.3</b> Mean Value Imputation</a></li>
-<li class="chapter" data-level="3.3.4" data-path="missingness.html"><a href="missingness.html#mice-multiple-imputation-by-chained-equations"><i class="fa fa-check"></i><b>3.3.4</b> MICE: Multiple Imputation by Chained Equations</a></li>
+<li class="chapter" data-level="3.2.1" data-path="logistic-regression.html"><a href="logistic-regression.html#definition"><i class="fa fa-check"></i><b>3.2.1</b> Definition</a></li>
+<li class="chapter" data-level="3.2.2" data-path="logistic-regression.html"><a href="logistic-regression.html#probability"><i class="fa fa-check"></i><b>3.2.2</b> Probability</a></li>
+<li class="chapter" data-level="3.2.3" data-path="logistic-regression.html"><a href="logistic-regression.html#conditional-probability"><i class="fa fa-check"></i><b>3.2.3</b> Conditional Probability</a></li>
+<li class="chapter" data-level="3.2.4" data-path="logistic-regression.html"><a href="logistic-regression.html#probability-1"><i class="fa fa-check"></i><b>3.2.4</b> Probability</a></li>
 </ul></li>
-<li class="chapter" data-level="3.4" data-path="missingness.html"><a href="missingness.html#investigate-missing-data"><i class="fa fa-check"></i><b>3.4</b> Investigate Missing Data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="missingness.html"><a href="missingness.html"><i class="fa fa-check"></i><b>4</b> Missingness</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="missingness.html"><a href="missingness.html#introduction"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="missingness.html"><a href="missingness.html#missingess-patterns"><i class="fa fa-check"></i><b>4.2</b> Missingess Patterns</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="missingness.html"><a href="missingness.html#simulation-setup"><i class="fa fa-check"></i><b>4.2.1</b> Simulation Setup</a></li>
+<li class="chapter" data-level="4.2.2" data-path="missingness.html"><a href="missingness.html#missingness-completely-at-random"><i class="fa fa-check"></i><b>4.2.2</b> Missingness Completely at Random</a></li>
+<li class="chapter" data-level="4.2.3" data-path="missingness.html"><a href="missingness.html#missingness-at-random"><i class="fa fa-check"></i><b>4.2.3</b> Missingness at Random</a></li>
+<li class="chapter" data-level="4.2.4" data-path="missingness.html"><a href="missingness.html#missingness-not-at-random"><i class="fa fa-check"></i><b>4.2.4</b> Missingness Not at Random</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html"><i class="fa fa-check"></i><b>5</b> Relationships and Regression</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#relationships"><i class="fa fa-check"></i><b>5.1</b> Relationships</a></li>
+<li class="chapter" data-level="5.2" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#pearson-correlation-coefficient"><i class="fa fa-check"></i><b>5.2</b> Pearson Correlation Coefficient</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#calculating-coefficient"><i class="fa fa-check"></i><b>5.2.1</b> Calculating Coefficient</a></li>
+<li class="chapter" data-level="5.2.2" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#hypothesis-testing"><i class="fa fa-check"></i><b>5.2.2</b> Hypothesis Testing</a></li>
+<li class="chapter" data-level="5.2.3" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#no-relationship"><i class="fa fa-check"></i><b>5.2.3</b> No Relationship</a></li>
+<li class="chapter" data-level="5.2.4" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#orange-dataset"><i class="fa fa-check"></i><b>5.2.4</b> Orange Dataset</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="relationships-and-regression.html"><a href="relationships-and-regression.html#spearman-rank-correlation"><i class="fa fa-check"></i><b>5.3</b> Spearman Rank Correlation</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -201,12 +222,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="missingness" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">3</span> Missingness<a href="missingness.html#missingness" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="missingness.html#cb1-1" tabindex="-1"></a><span class="fu">library</span>(mice)</span>
-<span id="cb1-2"><a href="missingness.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(VIM)</span></code></pre></div>
-<div id="introduction" class="section level2 hasAnchor" number="3.1">
-<h2><span class="header-section-number">3.1</span> Introduction<a href="missingness.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="missingness" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Missingness<a href="missingness.html#missingness" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Introduction<a href="missingness.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>When fitting models to a particular data set, missingness is of particular
 concern. Missing data can lead to biased coefficient estimates. Therefore, a
 good understanding of the different missingness patterns, their implications on
@@ -220,10 +239,10 @@ missingness patterns (missingness mechanisms):</p>
 <p>In the following sections, we will use a simulated data set containing data on
 patients and their weight and BMI to illustrate these different mechanisms.</p>
 </div>
-<div id="missingess-patterns" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Missingess Patterns<a href="missingness.html#missingess-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="simulation-setup" class="section level3 hasAnchor" number="3.2.1">
-<h3><span class="header-section-number">3.2.1</span> Simulation Setup<a href="missingness.html#simulation-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="missingess-patterns" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Missingess Patterns<a href="missingness.html#missingess-patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="simulation-setup" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Simulation Setup<a href="missingness.html#simulation-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Our simulation setup involves simulating the weight of patients visiting their
 general physician (GP) for a checkup. For each patient, the sex (male, female)
 is always recorded. The data set is balanced in terms of sex, and we assume a
@@ -242,76 +261,75 @@ distributed as follows:</p>
 <p><span class="math display">\[
 BMI \sim \mathcal{N}(25, 9).
 \]</span></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="missingness.html#cb2-1" tabindex="-1"></a><span class="co"># Simulate patient data. The data set contains 10000 observations, and is </span></span>
-<span id="cb2-2"><a href="missingness.html#cb2-2" tabindex="-1"></a><span class="co"># balanced in terms of sex.</span></span>
-<span id="cb2-3"><a href="missingness.html#cb2-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb2-4"><a href="missingness.html#cb2-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb2-5"><a href="missingness.html#cb2-5" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="missingness.html#cb2-6" tabindex="-1"></a><span class="co"># Define the parameters that define the distribution of weight and BMI</span></span>
-<span id="cb2-7"><a href="missingness.html#cb2-7" tabindex="-1"></a>sd_bmi <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb2-8"><a href="missingness.html#cb2-8" tabindex="-1"></a>mu_bmi <span class="ot">&lt;-</span> <span class="dv">25</span></span>
-<span id="cb2-9"><a href="missingness.html#cb2-9" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="missingness.html#cb2-10" tabindex="-1"></a>sd_weight <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb2-11"><a href="missingness.html#cb2-11" tabindex="-1"></a>mu_weight_f <span class="ot">&lt;-</span> <span class="dv">65</span></span>
-<span id="cb2-12"><a href="missingness.html#cb2-12" tabindex="-1"></a>mu_weight_m <span class="ot">&lt;-</span> <span class="dv">78</span></span>
-<span id="cb2-13"><a href="missingness.html#cb2-13" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="missingness.html#cb2-14" tabindex="-1"></a>weights <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb2-15"><a href="missingness.html#cb2-15" tabindex="-1"></a>  <span class="at">idx =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
-<span id="cb2-16"><a href="missingness.html#cb2-16" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>),</span>
-<span id="cb2-17"><a href="missingness.html#cb2-17" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(</span>
-<span id="cb2-18"><a href="missingness.html#cb2-18" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_f, sd_weight),</span>
-<span id="cb2-19"><a href="missingness.html#cb2-19" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_m, sd_weight)</span>
-<span id="cb2-20"><a href="missingness.html#cb2-20" tabindex="-1"></a>  ),</span>
-<span id="cb2-21"><a href="missingness.html#cb2-21" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, mu_bmi, sd_bmi), <span class="dv">1</span>)</span>
-<span id="cb2-22"><a href="missingness.html#cb2-22" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="missingness.html#cb42-1" tabindex="-1"></a><span class="co"># Simulate patient data. The data set contains 10000 observations, and is </span></span>
+<span id="cb42-2"><a href="missingness.html#cb42-2" tabindex="-1"></a><span class="co"># balanced in terms of sex.</span></span>
+<span id="cb42-3"><a href="missingness.html#cb42-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb42-4"><a href="missingness.html#cb42-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb42-5"><a href="missingness.html#cb42-5" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="missingness.html#cb42-6" tabindex="-1"></a><span class="co"># Define the parameters that define the distribution of weight and BMI</span></span>
+<span id="cb42-7"><a href="missingness.html#cb42-7" tabindex="-1"></a>sd_bmi <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb42-8"><a href="missingness.html#cb42-8" tabindex="-1"></a>mu_bmi <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb42-9"><a href="missingness.html#cb42-9" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="missingness.html#cb42-10" tabindex="-1"></a>sd_weight <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb42-11"><a href="missingness.html#cb42-11" tabindex="-1"></a>mu_weight_f <span class="ot">&lt;-</span> <span class="dv">65</span></span>
+<span id="cb42-12"><a href="missingness.html#cb42-12" tabindex="-1"></a>mu_weight_m <span class="ot">&lt;-</span> <span class="dv">78</span></span>
+<span id="cb42-13"><a href="missingness.html#cb42-13" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="missingness.html#cb42-14" tabindex="-1"></a>weights <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb42-15"><a href="missingness.html#cb42-15" tabindex="-1"></a>  <span class="at">idx =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb42-16"><a href="missingness.html#cb42-16" tabindex="-1"></a>  <span class="at">sex =</span> <span class="fu">rep</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>), <span class="at">each =</span> n <span class="sc">/</span> <span class="dv">2</span>),</span>
+<span id="cb42-17"><a href="missingness.html#cb42-17" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(</span>
+<span id="cb42-18"><a href="missingness.html#cb42-18" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_f, sd_weight),</span>
+<span id="cb42-19"><a href="missingness.html#cb42-19" tabindex="-1"></a>    <span class="fu">rnorm</span>(n <span class="sc">/</span> <span class="dv">2</span>, mu_weight_m, sd_weight)</span>
+<span id="cb42-20"><a href="missingness.html#cb42-20" tabindex="-1"></a>  ),</span>
+<span id="cb42-21"><a href="missingness.html#cb42-21" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, mu_bmi, sd_bmi), <span class="dv">1</span>)</span>
+<span id="cb42-22"><a href="missingness.html#cb42-22" tabindex="-1"></a>)</span></code></pre></div>
 <p>We can see that the conditional distributions of weight given sex have different
 means.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
 <p>But the conditional distributions of BMI are the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
 </div>
-<div id="missingness-completely-at-random" class="section level3 hasAnchor" number="3.2.2">
-<h3><span class="header-section-number">3.2.2</span> Missingness Completely at Random<a href="missingness.html#missingness-completely-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="missingness-completely-at-random" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Missingness Completely at Random<a href="missingness.html#missingness-completely-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Missingness completely at random indicates that the observations with missing
 values are a random subset of all observations. There are no factors that affect
-the probability of missingness, nor is the probability of missingness affected
-by the outcome itself (weight or BMI); the probability of missingness does not
-depend on observed nor unobserved variables. The distribution of observed and
-missing values is the same.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="missingness.html#cb3-1" tabindex="-1"></a><span class="co"># Simulate MCAR: assume that 30% of observations have a missing outcome</span></span>
-<span id="cb3-2"><a href="missingness.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb3-3"><a href="missingness.html#cb3-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> n <span class="sc">*</span> <span class="fl">0.3</span>)</span>
-<span id="cb3-4"><a href="missingness.html#cb3-4" tabindex="-1"></a>weights[<span class="st">&quot;mcar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+the probability of missingness, nor is the probability of missingess affected by
+the outcome itself (weight or BMI). The distribution of observed and missing
+values is the same.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="missingness.html#cb43-1" tabindex="-1"></a><span class="co"># Simulate MCAR: assume that 30% of observations have a missing outcome</span></span>
+<span id="cb43-2"><a href="missingness.html#cb43-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb43-3"><a href="missingness.html#cb43-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="at">x =</span> n, <span class="at">size =</span> n <span class="sc">*</span> <span class="fl">0.3</span>)</span>
+<span id="cb43-4"><a href="missingness.html#cb43-4" tabindex="-1"></a>weights[<span class="st">&quot;mcar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>Because the observations with missing values are a random subset of all
 observations, we should see no difference between the distributions of missing
 and observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 </div>
-<div id="missingness-at-random" class="section level3 hasAnchor" number="3.2.3">
-<h3><span class="header-section-number">3.2.3</span> Missingness at Random<a href="missingness.html#missingness-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="missingness-at-random" class="section level3 hasAnchor" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> Missingness at Random<a href="missingness.html#missingness-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>With missingness at random, we believe there are certain factors that affect the
 probability of missingness, and that these same factors also have an effect on
 the outcome. In our example, we see that sex affects the weight. We now assume
 that sex also affects the probability of missingness.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="missingness.html#cb4-1" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
-<span id="cb4-2"><a href="missingness.html#cb4-2" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
-<span id="cb4-3"><a href="missingness.html#cb4-3" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
-<span id="cb4-4"><a href="missingness.html#cb4-4" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="missingness.html#cb4-5" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb4-6"><a href="missingness.html#cb4-6" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb4-7"><a href="missingness.html#cb4-7" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb4-8"><a href="missingness.html#cb4-8" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_f</span>
-<span id="cb4-9"><a href="missingness.html#cb4-9" tabindex="-1"></a>  ),</span>
-<span id="cb4-10"><a href="missingness.html#cb4-10" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb4-11"><a href="missingness.html#cb4-11" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb4-12"><a href="missingness.html#cb4-12" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_m</span>
-<span id="cb4-13"><a href="missingness.html#cb4-13" tabindex="-1"></a>  )</span>
-<span id="cb4-14"><a href="missingness.html#cb4-14" tabindex="-1"></a>)</span>
-<span id="cb4-15"><a href="missingness.html#cb4-15" tabindex="-1"></a>weights[<span class="st">&quot;mar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="missingness.html#cb44-1" tabindex="-1"></a><span class="co"># Determine the conditional probabilities of missingness</span></span>
+<span id="cb44-2"><a href="missingness.html#cb44-2" tabindex="-1"></a>p_missing_f <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
+<span id="cb44-3"><a href="missingness.html#cb44-3" tabindex="-1"></a>p_missing_m <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb44-4"><a href="missingness.html#cb44-4" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="missingness.html#cb44-5" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb44-6"><a href="missingness.html#cb44-6" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb44-7"><a href="missingness.html#cb44-7" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;F&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb44-8"><a href="missingness.html#cb44-8" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_f</span>
+<span id="cb44-9"><a href="missingness.html#cb44-9" tabindex="-1"></a>  ),</span>
+<span id="cb44-10"><a href="missingness.html#cb44-10" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb44-11"><a href="missingness.html#cb44-11" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>sex <span class="sc">==</span> <span class="st">&quot;M&quot;</span>, <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb44-12"><a href="missingness.html#cb44-12" tabindex="-1"></a>    <span class="at">size =</span> (n <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> p_missing_m</span>
+<span id="cb44-13"><a href="missingness.html#cb44-13" tabindex="-1"></a>  )</span>
+<span id="cb44-14"><a href="missingness.html#cb44-14" tabindex="-1"></a>)</span>
+<span id="cb44-15"><a href="missingness.html#cb44-15" tabindex="-1"></a>weights[<span class="st">&quot;mar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>Inspection of the distributions of observed and missing values shows us that the
 distribution of missing values is shifted to the left compared to the
 distribution of observed values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <p>Because the probability of missingness is higher for women then for men, the
 fraction of patients with a missing weight that are female is higher than the
 fraction of patients with a missing weight that are men. This affects the
@@ -319,7 +337,7 @@ distribution of the missing weights, i.e., shifting the distribution to the
 left. Assume that sex is the only factor that affects the probability of
 missingness, then, conditional on sex, the distribution of observed values and
 missing values is the same.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
 <p>We can see that, conditional on sex, the distribution of observed and missing
 weights is the same. This illustrates the concept of missingness at random. Sex
 is the factor that influences both the probability of missingness and the
@@ -330,14 +348,14 @@ distribution of observed and missing values as the missing values are, of
 course, missing. This example just demonstrates the concept of missingness at
 random.</p>
 </div>
-<div id="missingness-not-at-random" class="section level3 hasAnchor" number="3.2.4">
-<h3><span class="header-section-number">3.2.4</span> Missingness Not at Random<a href="missingness.html#missingness-not-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="missingness-not-at-random" class="section level3 hasAnchor" number="4.2.4">
+<h3><span class="header-section-number">4.2.4</span> Missingness Not at Random<a href="missingness.html#missingness-not-at-random" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>With missingness not at random, the probability of missingness is not affected
 by a factor that is recorded, but is affected by factors that are not recorded
 or even by the outcome itself. For this missingness pattern, we will not focus
 on the weight of the patient but on the patient’s BMI. The distribution of BMI
 is the same for women and for men:</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
 <p>However, we could argue the following: if a patient visits the GP, then the GP
 will more likely weigh the patient if he/she seems overweight or obese. We could
 make the same argument for underweight patients, but for the sake of
@@ -350,40 +368,40 @@ overweight and obese patients. Based on BMI, we can classify patients as:</p>
 <li>obese: <span class="math inline">\(30 \leq BMI\)</span>.</li>
 </ul>
 <p>We assume the following conditional probabilities of missingness:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="missingness.html#cb5-1" tabindex="-1"></a><span class="co"># Define conditional probabilities of missingness</span></span>
-<span id="cb5-2"><a href="missingness.html#cb5-2" tabindex="-1"></a>p_missing_uw_nw <span class="ot">&lt;-</span> <span class="fl">0.75</span> <span class="co"># underweight and normal weight</span></span>
-<span id="cb5-3"><a href="missingness.html#cb5-3" tabindex="-1"></a>p_missing_ow_ob <span class="ot">&lt;-</span> <span class="fl">0.55</span> <span class="co"># overweight and obese</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="missingness.html#cb6-1" tabindex="-1"></a><span class="co"># Classify patients based on their BMI</span></span>
-<span id="cb6-2"><a href="missingness.html#cb6-2" tabindex="-1"></a>weights <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="missingness.html#cb6-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb6-4"><a href="missingness.html#cb6-4" tabindex="-1"></a>    <span class="at">bmi_class =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb6-5"><a href="missingness.html#cb6-5" tabindex="-1"></a>      bmi <span class="sc">&lt;</span> <span class="fl">18.5</span> <span class="sc">~</span> <span class="st">&quot;uw&quot;</span>,</span>
-<span id="cb6-6"><a href="missingness.html#cb6-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">18.5</span>, <span class="fl">24.9</span>) <span class="sc">~</span> <span class="st">&quot;nw&quot;</span>,</span>
-<span id="cb6-7"><a href="missingness.html#cb6-7" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">25.0</span>, <span class="fl">29.9</span>) <span class="sc">~</span> <span class="st">&quot;ow&quot;</span>,</span>
-<span id="cb6-8"><a href="missingness.html#cb6-8" tabindex="-1"></a>      bmi <span class="sc">&gt;=</span> <span class="fl">30.0</span> <span class="sc">~</span> <span class="st">&quot;ob&quot;</span></span>
-<span id="cb6-9"><a href="missingness.html#cb6-9" tabindex="-1"></a>    )</span>
-<span id="cb6-10"><a href="missingness.html#cb6-10" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="missingness.html#cb7-1" tabindex="-1"></a>fd_bmi_classes_df <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="missingness.html#cb7-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(bmi_class) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="missingness.html#cb7-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>())</span>
-<span id="cb7-4"><a href="missingness.html#cb7-4" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="missingness.html#cb7-5" tabindex="-1"></a>fd_bmi_classes <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>n</span>
-<span id="cb7-6"><a href="missingness.html#cb7-6" tabindex="-1"></a><span class="fu">names</span>(fd_bmi_classes) <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>bmi_class</span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="missingness.html#cb8-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
-<span id="cb8-2"><a href="missingness.html#cb8-2" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="missingness.html#cb8-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb8-4"><a href="missingness.html#cb8-4" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb8-5"><a href="missingness.html#cb8-5" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;uw&quot;</span>, <span class="st">&quot;nw&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb8-6"><a href="missingness.html#cb8-6" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;uw&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;nw&quot;</span>]) <span class="sc">*</span> p_missing_uw_nw)</span>
-<span id="cb8-7"><a href="missingness.html#cb8-7" tabindex="-1"></a>  ),</span>
-<span id="cb8-8"><a href="missingness.html#cb8-8" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
-<span id="cb8-9"><a href="missingness.html#cb8-9" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ow&quot;</span>, <span class="st">&quot;ob&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
-<span id="cb8-10"><a href="missingness.html#cb8-10" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;ow&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;ob&quot;</span>]) <span class="sc">*</span> p_missing_ow_ob)</span>
-<span id="cb8-11"><a href="missingness.html#cb8-11" tabindex="-1"></a>  )</span>
-<span id="cb8-12"><a href="missingness.html#cb8-12" tabindex="-1"></a>)</span>
-<span id="cb8-13"><a href="missingness.html#cb8-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="missingness.html#cb45-1" tabindex="-1"></a><span class="co"># Define conditional probabilities of missingness</span></span>
+<span id="cb45-2"><a href="missingness.html#cb45-2" tabindex="-1"></a>p_missing_uw_nw <span class="ot">&lt;-</span> <span class="fl">0.75</span> <span class="co"># underweight and normal weight</span></span>
+<span id="cb45-3"><a href="missingness.html#cb45-3" tabindex="-1"></a>p_missing_ow_ob <span class="ot">&lt;-</span> <span class="fl">0.55</span> <span class="co"># overweight and obese</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="missingness.html#cb46-1" tabindex="-1"></a><span class="co"># Classify patients based on their BMI</span></span>
+<span id="cb46-2"><a href="missingness.html#cb46-2" tabindex="-1"></a>weights <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href="missingness.html#cb46-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb46-4"><a href="missingness.html#cb46-4" tabindex="-1"></a>    <span class="at">bmi_class =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb46-5"><a href="missingness.html#cb46-5" tabindex="-1"></a>      bmi <span class="sc">&lt;</span> <span class="fl">18.5</span> <span class="sc">~</span> <span class="st">&quot;uw&quot;</span>,</span>
+<span id="cb46-6"><a href="missingness.html#cb46-6" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">18.5</span>, <span class="fl">24.9</span>) <span class="sc">~</span> <span class="st">&quot;nw&quot;</span>,</span>
+<span id="cb46-7"><a href="missingness.html#cb46-7" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">between</span>(bmi, <span class="fl">25.0</span>, <span class="fl">29.9</span>) <span class="sc">~</span> <span class="st">&quot;ow&quot;</span>,</span>
+<span id="cb46-8"><a href="missingness.html#cb46-8" tabindex="-1"></a>      bmi <span class="sc">&gt;=</span> <span class="fl">30.0</span> <span class="sc">~</span> <span class="st">&quot;ob&quot;</span></span>
+<span id="cb46-9"><a href="missingness.html#cb46-9" tabindex="-1"></a>    )</span>
+<span id="cb46-10"><a href="missingness.html#cb46-10" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="missingness.html#cb47-1" tabindex="-1"></a>fd_bmi_classes_df <span class="ot">&lt;-</span> weights <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="missingness.html#cb47-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(bmi_class) <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="missingness.html#cb47-3" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>())</span>
+<span id="cb47-4"><a href="missingness.html#cb47-4" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="missingness.html#cb47-5" tabindex="-1"></a>fd_bmi_classes <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>n</span>
+<span id="cb47-6"><a href="missingness.html#cb47-6" tabindex="-1"></a><span class="fu">names</span>(fd_bmi_classes) <span class="ot">&lt;-</span> fd_bmi_classes_df<span class="sc">$</span>bmi_class</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="missingness.html#cb48-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb48-2"><a href="missingness.html#cb48-2" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="missingness.html#cb48-3" tabindex="-1"></a>idxs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb48-4"><a href="missingness.html#cb48-4" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb48-5"><a href="missingness.html#cb48-5" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;uw&quot;</span>, <span class="st">&quot;nw&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb48-6"><a href="missingness.html#cb48-6" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;uw&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;nw&quot;</span>]) <span class="sc">*</span> p_missing_uw_nw)</span>
+<span id="cb48-7"><a href="missingness.html#cb48-7" tabindex="-1"></a>  ),</span>
+<span id="cb48-8"><a href="missingness.html#cb48-8" tabindex="-1"></a>  <span class="fu">sample</span>(</span>
+<span id="cb48-9"><a href="missingness.html#cb48-9" tabindex="-1"></a>    <span class="at">x =</span> weights[weights<span class="sc">$</span>bmi_class <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ow&quot;</span>, <span class="st">&quot;ob&quot;</span>), <span class="st">&quot;idx&quot;</span>, <span class="at">drop =</span> T],</span>
+<span id="cb48-10"><a href="missingness.html#cb48-10" tabindex="-1"></a>    <span class="at">size =</span> <span class="fu">round</span>((fd_bmi_classes[<span class="st">&quot;ow&quot;</span>] <span class="sc">+</span> fd_bmi_classes[<span class="st">&quot;ob&quot;</span>]) <span class="sc">*</span> p_missing_ow_ob)</span>
+<span id="cb48-11"><a href="missingness.html#cb48-11" tabindex="-1"></a>  )</span>
+<span id="cb48-12"><a href="missingness.html#cb48-12" tabindex="-1"></a>)</span>
+<span id="cb48-13"><a href="missingness.html#cb48-13" tabindex="-1"></a>weights[<span class="st">&quot;mnar&quot;</span>] <span class="ot">&lt;-</span> weights<span class="sc">$</span>idx <span class="sc">%in%</span> idxs</span></code></pre></div>
 <p>First, let’s have a look at the distribution of BMI conditional on missingness.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
 <p>The distribution of the missing BMI values is shifted to the left compared to
 the distribution of the observed BMI values. This makes sense as the probability
 of the weight being recorded, and thus the BMI being calculated, is bigger as
@@ -392,7 +410,8 @@ a patient tends to be overweight or obese.</p>
 missigness, nor is there any other factor that influences the probability of
 missingness, only the outcome itself. Therefore, conditioning on sex, will not
 eliminate the difference in distribution between observed and missing values.</p>
-<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
+
 </div>
 </div>
 <div id="handling-missing-data" class="section level2 hasAnchor" number="3.3">
@@ -784,8 +803,8 @@ that have missing values.</p>
           </div>
         </div>
       </div>
-<a href="logistic-models-and-deviance.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="logistic-regression.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="relationships-and-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
