@@ -28,6 +28,15 @@ simulation-setup
 missingness-completely-at-random
 missingness-at-random
 missingness-not-at-random
+handling-missing-data
+example-case
+complete-case-analysis
+mean-value-imputation
+mice
+continuous-variables
+regression-based-imputation
+predictive-mean-matching
+investigate-missing-data
 relationships-and-regression
 relationships
 pearson-correlation-coefficient
@@ -36,7 +45,3 @@ hypothesis-testing
 no-relationship
 orange-dataset
 spearman-rank-correlation
-mice
-continuous-variables
-regression-based-imputation
-predictive-mean-matching

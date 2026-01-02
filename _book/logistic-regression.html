@@ -272,36 +272,36 @@ patient, the outcome is drawn randomly from a Bernoulli distribution defined by
 ## 4 4 1 0.8830174
 ## 5 5 0 0.9404673</code></pre>
 <p>We can also visualize the five Bernoulli distributions for each of the patients.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="logistic-regression.html#cb3-1" tabindex="-1"></a><span class="cf">for</span> (idx <span class="cf">in</span> <span class="fu">seq_along</span>(probs)) {</span>
-<span id="cb3-2"><a href="logistic-regression.html#cb3-2" tabindex="-1"></a>  </span>
-<span id="cb3-3"><a href="logistic-regression.html#cb3-3" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> probs[idx]</span>
-<span id="cb3-4"><a href="logistic-regression.html#cb3-4" tabindex="-1"></a>  <span class="fu">plot</span>(</span>
-<span id="cb3-5"><a href="logistic-regression.html#cb3-5" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb3-6"><a href="logistic-regression.html#cb3-6" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> prob, prob),</span>
-<span id="cb3-7"><a href="logistic-regression.html#cb3-7" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb3-8"><a href="logistic-regression.html#cb3-8" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Probability&quot;</span>,</span>
-<span id="cb3-9"><a href="logistic-regression.html#cb3-9" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">&quot;Patient 0&quot;</span>, idx),</span>
-<span id="cb3-10"><a href="logistic-regression.html#cb3-10" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb3-11"><a href="logistic-regression.html#cb3-11" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;red&quot;</span>,</span>
-<span id="cb3-12"><a href="logistic-regression.html#cb3-12" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">16</span></span>
-<span id="cb3-13"><a href="logistic-regression.html#cb3-13" tabindex="-1"></a>  )</span>
-<span id="cb3-14"><a href="logistic-regression.html#cb3-14" tabindex="-1"></a>  </span>
-<span id="cb3-15"><a href="logistic-regression.html#cb3-15" tabindex="-1"></a>}</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-5-2.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-5-3.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-5-4.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-5-5.png" width="672" /></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="logistic-regression.html#cb19-1" tabindex="-1"></a><span class="cf">for</span> (idx <span class="cf">in</span> <span class="fu">seq_along</span>(probs)) {</span>
+<span id="cb19-2"><a href="logistic-regression.html#cb19-2" tabindex="-1"></a>  </span>
+<span id="cb19-3"><a href="logistic-regression.html#cb19-3" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> probs[idx]</span>
+<span id="cb19-4"><a href="logistic-regression.html#cb19-4" tabindex="-1"></a>  <span class="fu">plot</span>(</span>
+<span id="cb19-5"><a href="logistic-regression.html#cb19-5" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb19-6"><a href="logistic-regression.html#cb19-6" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> prob, prob),</span>
+<span id="cb19-7"><a href="logistic-regression.html#cb19-7" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb19-8"><a href="logistic-regression.html#cb19-8" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">&quot;Probability&quot;</span>,</span>
+<span id="cb19-9"><a href="logistic-regression.html#cb19-9" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste0</span>(<span class="st">&quot;Patient 0&quot;</span>, idx),</span>
+<span id="cb19-10"><a href="logistic-regression.html#cb19-10" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb19-11"><a href="logistic-regression.html#cb19-11" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb19-12"><a href="logistic-regression.html#cb19-12" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">16</span></span>
+<span id="cb19-13"><a href="logistic-regression.html#cb19-13" tabindex="-1"></a>  )</span>
+<span id="cb19-14"><a href="logistic-regression.html#cb19-14" tabindex="-1"></a>  </span>
+<span id="cb19-15"><a href="logistic-regression.html#cb19-15" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-21-1.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-21-2.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-21-3.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-21-4.png" width="672" /><img src="_main_files/figure-html/unnamed-chunk-21-5.png" width="672" /></p>
 </div>
 <div id="model-fitting" class="section level3 hasAnchor" number="3.1.2">
 <h3><span class="header-section-number">3.1.2</span> Model Fitting<a href="logistic-regression.html#model-fitting" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We use the <strong>heart</strong> dataset and denote the outcome in the heart dataset with
 the variable <span class="math inline">\(Y\)</span>, with <span class="math inline">\(Y = 1\)</span> if the patient has a heart disease and <span class="math inline">\(Y = 0\)</span>
 otherwise.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="logistic-regression.html#cb4-1" tabindex="-1"></a>heart<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(heart<span class="sc">$</span>HeartDisease)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="logistic-regression.html#cb20-1" tabindex="-1"></a>heart<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(heart<span class="sc">$</span>HeartDisease)</span></code></pre></div>
 <p>Prior to fitting a model, we cast the categorical variables to factors.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="logistic-regression.html#cb5-1" tabindex="-1"></a>heart<span class="sc">$</span>ChestPainType <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb5-2"><a href="logistic-regression.html#cb5-2" tabindex="-1"></a>  <span class="at">x =</span> heart<span class="sc">$</span>ChestPainType, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;ASY&quot;</span>, <span class="st">&quot;NAP&quot;</span>, <span class="st">&quot;TA&quot;</span>, <span class="st">&quot;ATA&quot;</span>)</span>
-<span id="cb5-3"><a href="logistic-regression.html#cb5-3" tabindex="-1"></a>)</span>
-<span id="cb5-4"><a href="logistic-regression.html#cb5-4" tabindex="-1"></a>heart<span class="sc">$</span>Sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
-<span id="cb5-5"><a href="logistic-regression.html#cb5-5" tabindex="-1"></a>  <span class="at">x =</span> heart<span class="sc">$</span>Sex, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>)</span>
-<span id="cb5-6"><a href="logistic-regression.html#cb5-6" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="logistic-regression.html#cb21-1" tabindex="-1"></a>heart<span class="sc">$</span>ChestPainType <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb21-2"><a href="logistic-regression.html#cb21-2" tabindex="-1"></a>  <span class="at">x =</span> heart<span class="sc">$</span>ChestPainType, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;ASY&quot;</span>, <span class="st">&quot;NAP&quot;</span>, <span class="st">&quot;TA&quot;</span>, <span class="st">&quot;ATA&quot;</span>)</span>
+<span id="cb21-3"><a href="logistic-regression.html#cb21-3" tabindex="-1"></a>)</span>
+<span id="cb21-4"><a href="logistic-regression.html#cb21-4" tabindex="-1"></a>heart<span class="sc">$</span>Sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb21-5"><a href="logistic-regression.html#cb21-5" tabindex="-1"></a>  <span class="at">x =</span> heart<span class="sc">$</span>Sex, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>)</span>
+<span id="cb21-6"><a href="logistic-regression.html#cb21-6" tabindex="-1"></a>)</span></code></pre></div>
 <p>We fit the following model to the data:</p>
 <p><span class="math display">\[
 \mathbb{E} [Y_i] = \beta_0 + \beta_1 \cdot X_{age} + \beta_2 \cdot X_{male}
@@ -309,11 +309,11 @@ otherwise.</p>
 <p>with <span class="math inline">\(X_{age}\)</span> the age and <span class="math inline">\(X_{male} = 1\)</span> if the person is male and
 <span class="math inline">\(X_{male} = 0\)</span> otherwise. The model contains three parameters, i.e., <span class="math inline">\(\beta_0\)</span>,
 <span class="math inline">\(\beta_1\)</span>, and <span class="math inline">\(\beta_2\)</span>. We call <strong>glm()</strong> as follows to fit the model:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="logistic-regression.html#cb6-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb6-2"><a href="logistic-regression.html#cb6-2" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">&quot;HeartDisease ~ Age + Sex&quot;</span>,</span>
-<span id="cb6-3"><a href="logistic-regression.html#cb6-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
-<span id="cb6-4"><a href="logistic-regression.html#cb6-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
-<span id="cb6-5"><a href="logistic-regression.html#cb6-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="logistic-regression.html#cb22-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb22-2"><a href="logistic-regression.html#cb22-2" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">&quot;HeartDisease ~ Age + Sex&quot;</span>,</span>
+<span id="cb22-3"><a href="logistic-regression.html#cb22-3" tabindex="-1"></a>  <span class="at">data =</span> heart,</span>
+<span id="cb22-4"><a href="logistic-regression.html#cb22-4" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>)</span>
+<span id="cb22-5"><a href="logistic-regression.html#cb22-5" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = &quot;HeartDisease ~ Age + Sex&quot;, family = binomial(link = &quot;logit&quot;), 
@@ -480,15 +480,15 @@ will illustrate this with an example.</p>
 hospitals (with 10 patients each). For each patient, we know what hospital they
 were admitted to, their age at the time of hospital admission, and if they
 survived their hospital stay.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="logistic-regression.html#cb8-1" tabindex="-1"></a><span class="co"># Create the dataset</span></span>
-<span id="cb8-2"><a href="logistic-regression.html#cb8-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">345</span>)</span>
-<span id="cb8-3"><a href="logistic-regression.html#cb8-3" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="logistic-regression.html#cb8-4" tabindex="-1"></a>df <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb8-5"><a href="logistic-regression.html#cb8-5" tabindex="-1"></a>  <span class="at">i =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">20</span><span class="dt">L</span>,</span>
-<span id="cb8-6"><a href="logistic-regression.html#cb8-6" tabindex="-1"></a>  <span class="at">hospital =</span> <span class="fu">factor</span>(<span class="at">x =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="at">each =</span> <span class="dv">10</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>)),</span>
-<span id="cb8-7"><a href="logistic-regression.html#cb8-7" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">60</span>, <span class="dv">68</span>, <span class="dv">72</span>, <span class="dv">80</span>, <span class="dv">78</span>, <span class="dv">85</span>, <span class="dv">76</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">80</span>, <span class="dv">85</span>, <span class="dv">90</span>, <span class="dv">72</span>, <span class="dv">78</span>),</span>
-<span id="cb8-8"><a href="logistic-regression.html#cb8-8" tabindex="-1"></a>  <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb8-9"><a href="logistic-regression.html#cb8-9" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="logistic-regression.html#cb24-1" tabindex="-1"></a><span class="co"># Create the dataset</span></span>
+<span id="cb24-2"><a href="logistic-regression.html#cb24-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">345</span>)</span>
+<span id="cb24-3"><a href="logistic-regression.html#cb24-3" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="logistic-regression.html#cb24-4" tabindex="-1"></a>df <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb24-5"><a href="logistic-regression.html#cb24-5" tabindex="-1"></a>  <span class="at">i =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">20</span><span class="dt">L</span>,</span>
+<span id="cb24-6"><a href="logistic-regression.html#cb24-6" tabindex="-1"></a>  <span class="at">hospital =</span> <span class="fu">factor</span>(<span class="at">x =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="at">each =</span> <span class="dv">10</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>)),</span>
+<span id="cb24-7"><a href="logistic-regression.html#cb24-7" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">60</span>, <span class="dv">68</span>, <span class="dv">72</span>, <span class="dv">80</span>, <span class="dv">78</span>, <span class="dv">85</span>, <span class="dv">76</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">65</span>, <span class="dv">70</span>, <span class="dv">75</span>, <span class="dv">80</span>, <span class="dv">85</span>, <span class="dv">90</span>, <span class="dv">72</span>, <span class="dv">78</span>),</span>
+<span id="cb24-8"><a href="logistic-regression.html#cb24-8" tabindex="-1"></a>  <span class="at">Y =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb24-9"><a href="logistic-regression.html#cb24-9" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## # A tibble: 20 × 4
 ##        i hospital   age     Y
 ##    &lt;int&gt; &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt;
@@ -525,15 +525,15 @@ on their age and the hospital where they were admitted to as:</p>
 \]</span></p>
 <p>We know that <span class="math inline">\(\beta_z = 0.24\)</span> and <span class="math inline">\(\beta_x = 0.5\)</span>. We can now calculate the
 probability of dying for each patient.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="logistic-regression.html#cb10-1" tabindex="-1"></a><span class="co"># Define the parameters</span></span>
-<span id="cb10-2"><a href="logistic-regression.html#cb10-2" tabindex="-1"></a>B_z <span class="ot">&lt;-</span> <span class="fl">1.85</span></span>
-<span id="cb10-3"><a href="logistic-regression.html#cb10-3" tabindex="-1"></a>B_x <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb10-4"><a href="logistic-regression.html#cb10-4" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="logistic-regression.html#cb10-5" tabindex="-1"></a><span class="co"># Calculate the probability of dying per patient</span></span>
-<span id="cb10-6"><a href="logistic-regression.html#cb10-6" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb10-7"><a href="logistic-regression.html#cb10-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb10-8"><a href="logistic-regression.html#cb10-8" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Z_i =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(hospital <span class="sc">==</span> <span class="st">&quot;A&quot;</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">X_i =</span> age) <span class="sc">%&gt;%</span></span>
-<span id="cb10-9"><a href="logistic-regression.html#cb10-9" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">P_i =</span> <span class="fu">exp</span>(Z_i <span class="sc">*</span> B_z <span class="sc">+</span> X_i <span class="sc">*</span> B_x) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(Z_i <span class="sc">*</span> B_z <span class="sc">+</span> X_i <span class="sc">*</span> B_x)))</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="logistic-regression.html#cb26-1" tabindex="-1"></a><span class="co"># Define the parameters</span></span>
+<span id="cb26-2"><a href="logistic-regression.html#cb26-2" tabindex="-1"></a>B_z <span class="ot">&lt;-</span> <span class="fl">1.85</span></span>
+<span id="cb26-3"><a href="logistic-regression.html#cb26-3" tabindex="-1"></a>B_x <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb26-4"><a href="logistic-regression.html#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="logistic-regression.html#cb26-5" tabindex="-1"></a><span class="co"># Calculate the probability of dying per patient</span></span>
+<span id="cb26-6"><a href="logistic-regression.html#cb26-6" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb26-7"><a href="logistic-regression.html#cb26-7" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="logistic-regression.html#cb26-8" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Z_i =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(hospital <span class="sc">==</span> <span class="st">&quot;A&quot;</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">X_i =</span> age) <span class="sc">%&gt;%</span></span>
+<span id="cb26-9"><a href="logistic-regression.html#cb26-9" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">P_i =</span> <span class="fu">exp</span>(Z_i <span class="sc">*</span> B_z <span class="sc">+</span> X_i <span class="sc">*</span> B_x) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(Z_i <span class="sc">*</span> B_z <span class="sc">+</span> X_i <span class="sc">*</span> B_x)))</span></code></pre></div>
 <pre><code>## # A tibble: 20 × 7
 ## # Rowwise: 
 ##        i hospital   age     Y   Z_i   X_i   P_i
@@ -568,8 +568,8 @@ denote that the patient has diabetes and <span class="math inline">\(X = 0\)</sp
 a patient having diabetes depends on several factors, such as age, sex, weight,
 lifestyle, genetics, etc, and therefore this probability differs between
 patients.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="logistic-regression.html#cb12-1" tabindex="-1"></a><span class="co"># Construct a sample dataset</span></span>
-<span id="cb12-2"><a href="logistic-regression.html#cb12-2" tabindex="-1"></a>probs <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">i =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">5</span><span class="dt">L</span>, <span class="at">P_i =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="logistic-regression.html#cb28-1" tabindex="-1"></a><span class="co"># Construct a sample dataset</span></span>
+<span id="cb28-2"><a href="logistic-regression.html#cb28-2" tabindex="-1"></a>probs <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(<span class="at">i =</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="dv">5</span><span class="dt">L</span>, <span class="at">P_i =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">5</span>))</span></code></pre></div>
 <p>In the following table, we see that the probability that patient <span class="math inline">\(i = 1\)</span> has
 diabetes is <span class="math inline">\(\mathbb{P} (X_1 = 1) = 0.312\)</span> and for patient <span class="math inline">\(i = 4\)</span> it is
 <span class="math inline">\(\mathbb{P} (X_4 = 1) = 0.887\)</span>.</p>
@@ -651,12 +651,12 @@ possible outcome</p>
 \end{aligned}
 \]</span></p>
 <p>We can calculate this as follows:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="logistic-regression.html#cb15-1" tabindex="-1"></a><span class="co"># Get the observed outcome</span></span>
-<span id="cb15-2"><a href="logistic-regression.html#cb15-2" tabindex="-1"></a>Y_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb15-3"><a href="logistic-regression.html#cb15-3" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="logistic-regression.html#cb15-4" tabindex="-1"></a><span class="co"># Calculate the probability</span></span>
-<span id="cb15-5"><a href="logistic-regression.html#cb15-5" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fu">prod</span>(probs<span class="sc">$</span>P_i<span class="sc">^</span>Y_vector <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs<span class="sc">$</span>P_i)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y_vector))</span>
-<span id="cb15-6"><a href="logistic-regression.html#cb15-6" tabindex="-1"></a>prob_Y</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="logistic-regression.html#cb31-1" tabindex="-1"></a><span class="co"># Get the observed outcome</span></span>
+<span id="cb31-2"><a href="logistic-regression.html#cb31-2" tabindex="-1"></a>Y_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb31-3"><a href="logistic-regression.html#cb31-3" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="logistic-regression.html#cb31-4" tabindex="-1"></a><span class="co"># Calculate the probability</span></span>
+<span id="cb31-5"><a href="logistic-regression.html#cb31-5" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fu">prod</span>(probs<span class="sc">$</span>P_i<span class="sc">^</span>Y_vector <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs<span class="sc">$</span>P_i)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y_vector))</span>
+<span id="cb31-6"><a href="logistic-regression.html#cb31-6" tabindex="-1"></a>prob_Y</span></code></pre></div>
 <pre><code>## [1] 0.007147012</code></pre>
 <p>This is the probability of this possible outcome occurring. This possible
 outcome maps to <span class="math inline">\(Y = 3\)</span>. If we want to know <span class="math inline">\(\mathbb{P} (Y = 3)\)</span>, we must sum
@@ -671,18 +671,18 @@ probability of <span class="math inline">\(Y = 3\)</span> as follows:</p>
 \mathbb{P} (Y = 3) = \sum_{S(3)} \Bigg[ \prod_{i = 1}^{5} \bigg[ f(Y_i = y_i^*, \pi_i) \bigg] \Bigg]
 \]</span></p>
 <p>We can calculate this as follows:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="logistic-regression.html#cb17-1" tabindex="-1"></a><span class="co"># Get the subset of the sample space that maps to Y = 3</span></span>
-<span id="cb17-2"><a href="logistic-regression.html#cb17-2" tabindex="-1"></a>event_space <span class="ot">&lt;-</span> sample_space[<span class="fu">rowSums</span>(sample_space) <span class="sc">==</span> <span class="dv">3</span>,, drop <span class="ot">=</span> F]</span>
-<span id="cb17-3"><a href="logistic-regression.html#cb17-3" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="logistic-regression.html#cb17-4" tabindex="-1"></a><span class="co"># Calculate the probability</span></span>
-<span id="cb17-5"><a href="logistic-regression.html#cb17-5" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fl">0.0</span></span>
-<span id="cb17-6"><a href="logistic-regression.html#cb17-6" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(event_space)) {</span>
-<span id="cb17-7"><a href="logistic-regression.html#cb17-7" tabindex="-1"></a>  </span>
-<span id="cb17-8"><a href="logistic-regression.html#cb17-8" tabindex="-1"></a>  <span class="co"># Get the observed outcome</span></span>
-<span id="cb17-9"><a href="logistic-regression.html#cb17-9" tabindex="-1"></a>  Y_vector <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(event_space[i,, <span class="at">drop =</span> <span class="cn">TRUE</span>])</span>
-<span id="cb17-10"><a href="logistic-regression.html#cb17-10" tabindex="-1"></a>  prob_Y <span class="ot">&lt;-</span> prob_Y <span class="sc">+</span> <span class="fu">prod</span>((probs<span class="sc">$</span>P_i)<span class="sc">^</span>Y_vector <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs<span class="sc">$</span>P_i)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y_vector))</span>
-<span id="cb17-11"><a href="logistic-regression.html#cb17-11" tabindex="-1"></a>  </span>
-<span id="cb17-12"><a href="logistic-regression.html#cb17-12" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="logistic-regression.html#cb33-1" tabindex="-1"></a><span class="co"># Get the subset of the sample space that maps to Y = 3</span></span>
+<span id="cb33-2"><a href="logistic-regression.html#cb33-2" tabindex="-1"></a>event_space <span class="ot">&lt;-</span> sample_space[<span class="fu">rowSums</span>(sample_space) <span class="sc">==</span> <span class="dv">3</span>,, drop <span class="ot">=</span> F]</span>
+<span id="cb33-3"><a href="logistic-regression.html#cb33-3" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="logistic-regression.html#cb33-4" tabindex="-1"></a><span class="co"># Calculate the probability</span></span>
+<span id="cb33-5"><a href="logistic-regression.html#cb33-5" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fl">0.0</span></span>
+<span id="cb33-6"><a href="logistic-regression.html#cb33-6" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(event_space)) {</span>
+<span id="cb33-7"><a href="logistic-regression.html#cb33-7" tabindex="-1"></a>  </span>
+<span id="cb33-8"><a href="logistic-regression.html#cb33-8" tabindex="-1"></a>  <span class="co"># Get the observed outcome</span></span>
+<span id="cb33-9"><a href="logistic-regression.html#cb33-9" tabindex="-1"></a>  Y_vector <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(event_space[i,, <span class="at">drop =</span> <span class="cn">TRUE</span>])</span>
+<span id="cb33-10"><a href="logistic-regression.html#cb33-10" tabindex="-1"></a>  prob_Y <span class="ot">&lt;-</span> prob_Y <span class="sc">+</span> <span class="fu">prod</span>((probs<span class="sc">$</span>P_i)<span class="sc">^</span>Y_vector <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs<span class="sc">$</span>P_i)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y_vector))</span>
+<span id="cb33-11"><a href="logistic-regression.html#cb33-11" tabindex="-1"></a>  </span>
+<span id="cb33-12"><a href="logistic-regression.html#cb33-12" tabindex="-1"></a>}</span></code></pre></div>
 <pre><code>## [1] 0.3736777</code></pre>
 <p>So, we have <span class="math inline">\(\mathbb{P} (Y = 3) = 0.3736777\)</span>.</p>
 <p>As stated earlier, the probability of a patient <span class="math inline">\(i\)</span> having diabetes depends on
@@ -763,10 +763,10 @@ fact, <span class="math inline">\(10 \choose 2 = 45\)</span> possible outcomes i
 number of possible outcomes is shown below, where <span class="math inline">\(Y\)</span> denotes how many patients
 died during their hospital stay and <span class="math inline">\(SS\)</span> denotes how many of the possible
 outcomes in the sample space map to <span class="math inline">\(Y\)</span>.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="logistic-regression.html#cb20-1" tabindex="-1"></a>tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb20-2"><a href="logistic-regression.html#cb20-2" tabindex="-1"></a>  <span class="at">Y =</span> <span class="dv">0</span><span class="dt">L</span><span class="sc">:</span><span class="dv">10</span><span class="dt">L</span>,</span>
-<span id="cb20-3"><a href="logistic-regression.html#cb20-3" tabindex="-1"></a>  <span class="at">SS =</span> <span class="fu">choose</span>(<span class="dv">10</span>, Y)</span>
-<span id="cb20-4"><a href="logistic-regression.html#cb20-4" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="logistic-regression.html#cb36-1" tabindex="-1"></a>tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb36-2"><a href="logistic-regression.html#cb36-2" tabindex="-1"></a>  <span class="at">Y =</span> <span class="dv">0</span><span class="dt">L</span><span class="sc">:</span><span class="dv">10</span><span class="dt">L</span>,</span>
+<span id="cb36-3"><a href="logistic-regression.html#cb36-3" tabindex="-1"></a>  <span class="at">SS =</span> <span class="fu">choose</span>(<span class="dv">10</span>, Y)</span>
+<span id="cb36-4"><a href="logistic-regression.html#cb36-4" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## # A tibble: 11 × 2
 ##        Y    SS
 ##    &lt;int&gt; &lt;dbl&gt;
@@ -803,31 +803,31 @@ probabilities for each possible outcome in <span class="math inline">\(S(3)\)</s
 \sum_{S(t)} \mathbb{P} (\textbf{Y} = \textbf{y} | t = 3)
 \]</span></p>
 <p>We can calculate this:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="logistic-regression.html#cb22-1" tabindex="-1"></a><span class="co"># Construct the sample space</span></span>
-<span id="cb22-2"><a href="logistic-regression.html#cb22-2" tabindex="-1"></a>sample_space <span class="ot">&lt;-</span> gtools<span class="sc">::</span><span class="fu">permutations</span>(</span>
-<span id="cb22-3"><a href="logistic-regression.html#cb22-3" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">2</span>, <span class="at">r =</span> <span class="dv">10</span>,</span>
-<span id="cb22-4"><a href="logistic-regression.html#cb22-4" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">repeats.allowed =</span> <span class="cn">TRUE</span></span>
-<span id="cb22-5"><a href="logistic-regression.html#cb22-5" tabindex="-1"></a>)</span>
-<span id="cb22-6"><a href="logistic-regression.html#cb22-6" tabindex="-1"></a>sample_space <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">as_tibble</span>(sample_space, <span class="at">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)</span>
-<span id="cb22-7"><a href="logistic-regression.html#cb22-7" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="logistic-regression.html#cb22-8" tabindex="-1"></a><span class="co"># Get the subset of possible outcomes corresponding to Y = 3</span></span>
-<span id="cb22-9"><a href="logistic-regression.html#cb22-9" tabindex="-1"></a>event_space <span class="ot">&lt;-</span> sample_space[<span class="fu">rowSums</span>(sample_space) <span class="sc">==</span> <span class="dv">3</span>,, drop <span class="ot">=</span> F]</span>
-<span id="cb22-10"><a href="logistic-regression.html#cb22-10" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="logistic-regression.html#cb22-11" tabindex="-1"></a><span class="co"># Calculate the probability of Y = 3</span></span>
-<span id="cb22-12"><a href="logistic-regression.html#cb22-12" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fl">0.0</span></span>
-<span id="cb22-13"><a href="logistic-regression.html#cb22-13" tabindex="-1"></a>probs <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(hospital <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(P_i)</span>
-<span id="cb22-14"><a href="logistic-regression.html#cb22-14" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="logistic-regression.html#cb22-15" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="fu">nrow</span>(event_space)) {</span>
-<span id="cb22-16"><a href="logistic-regression.html#cb22-16" tabindex="-1"></a>  </span>
-<span id="cb22-17"><a href="logistic-regression.html#cb22-17" tabindex="-1"></a>  <span class="co"># Get the outcomes for each patient corresponding to Y = 3</span></span>
-<span id="cb22-18"><a href="logistic-regression.html#cb22-18" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(event_space[i,, <span class="at">drop =</span> <span class="cn">TRUE</span>])</span>
-<span id="cb22-19"><a href="logistic-regression.html#cb22-19" tabindex="-1"></a>  </span>
-<span id="cb22-20"><a href="logistic-regression.html#cb22-20" tabindex="-1"></a>  <span class="co"># Calculate the probability of this particular outcome occurring</span></span>
-<span id="cb22-21"><a href="logistic-regression.html#cb22-21" tabindex="-1"></a>  prob_Y <span class="ot">&lt;-</span> prob_Y <span class="sc">+</span> <span class="fu">prod</span>(probs<span class="sc">^</span>Y <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y))</span>
-<span id="cb22-22"><a href="logistic-regression.html#cb22-22" tabindex="-1"></a>  </span>
-<span id="cb22-23"><a href="logistic-regression.html#cb22-23" tabindex="-1"></a>}</span>
-<span id="cb22-24"><a href="logistic-regression.html#cb22-24" tabindex="-1"></a></span>
-<span id="cb22-25"><a href="logistic-regression.html#cb22-25" tabindex="-1"></a>prob_Y</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="logistic-regression.html#cb38-1" tabindex="-1"></a><span class="co"># Construct the sample space</span></span>
+<span id="cb38-2"><a href="logistic-regression.html#cb38-2" tabindex="-1"></a>sample_space <span class="ot">&lt;-</span> gtools<span class="sc">::</span><span class="fu">permutations</span>(</span>
+<span id="cb38-3"><a href="logistic-regression.html#cb38-3" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">2</span>, <span class="at">r =</span> <span class="dv">10</span>,</span>
+<span id="cb38-4"><a href="logistic-regression.html#cb38-4" tabindex="-1"></a>  <span class="at">v =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">repeats.allowed =</span> <span class="cn">TRUE</span></span>
+<span id="cb38-5"><a href="logistic-regression.html#cb38-5" tabindex="-1"></a>)</span>
+<span id="cb38-6"><a href="logistic-regression.html#cb38-6" tabindex="-1"></a>sample_space <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">as_tibble</span>(sample_space, <span class="at">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)</span>
+<span id="cb38-7"><a href="logistic-regression.html#cb38-7" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="logistic-regression.html#cb38-8" tabindex="-1"></a><span class="co"># Get the subset of possible outcomes corresponding to Y = 3</span></span>
+<span id="cb38-9"><a href="logistic-regression.html#cb38-9" tabindex="-1"></a>event_space <span class="ot">&lt;-</span> sample_space[<span class="fu">rowSums</span>(sample_space) <span class="sc">==</span> <span class="dv">3</span>,, drop <span class="ot">=</span> F]</span>
+<span id="cb38-10"><a href="logistic-regression.html#cb38-10" tabindex="-1"></a></span>
+<span id="cb38-11"><a href="logistic-regression.html#cb38-11" tabindex="-1"></a><span class="co"># Calculate the probability of Y = 3</span></span>
+<span id="cb38-12"><a href="logistic-regression.html#cb38-12" tabindex="-1"></a>prob_Y <span class="ot">&lt;-</span> <span class="fl">0.0</span></span>
+<span id="cb38-13"><a href="logistic-regression.html#cb38-13" tabindex="-1"></a>probs <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(hospital <span class="sc">==</span> <span class="st">&quot;A&quot;</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(P_i)</span>
+<span id="cb38-14"><a href="logistic-regression.html#cb38-14" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="logistic-regression.html#cb38-15" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="dt">L</span><span class="sc">:</span><span class="fu">nrow</span>(event_space)) {</span>
+<span id="cb38-16"><a href="logistic-regression.html#cb38-16" tabindex="-1"></a>  </span>
+<span id="cb38-17"><a href="logistic-regression.html#cb38-17" tabindex="-1"></a>  <span class="co"># Get the outcomes for each patient corresponding to Y = 3</span></span>
+<span id="cb38-18"><a href="logistic-regression.html#cb38-18" tabindex="-1"></a>  Y <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(event_space[i,, <span class="at">drop =</span> <span class="cn">TRUE</span>])</span>
+<span id="cb38-19"><a href="logistic-regression.html#cb38-19" tabindex="-1"></a>  </span>
+<span id="cb38-20"><a href="logistic-regression.html#cb38-20" tabindex="-1"></a>  <span class="co"># Calculate the probability of this particular outcome occurring</span></span>
+<span id="cb38-21"><a href="logistic-regression.html#cb38-21" tabindex="-1"></a>  prob_Y <span class="ot">&lt;-</span> prob_Y <span class="sc">+</span> <span class="fu">prod</span>(probs<span class="sc">^</span>Y <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> probs)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> Y))</span>
+<span id="cb38-22"><a href="logistic-regression.html#cb38-22" tabindex="-1"></a>  </span>
+<span id="cb38-23"><a href="logistic-regression.html#cb38-23" tabindex="-1"></a>}</span>
+<span id="cb38-24"><a href="logistic-regression.html#cb38-24" tabindex="-1"></a></span>
+<span id="cb38-25"><a href="logistic-regression.html#cb38-25" tabindex="-1"></a>prob_Y</span></code></pre></div>
 <pre><code>## [1] 8.732308e-10</code></pre>
 <p><span class="math display">\[
 \mathbb{P} (\textbf{Y} = \textbf{y}) = \mathbb{P} (Y_1 = y_1, Y_2 = y_2, ..., Y_n = Y_n)
@@ -841,7 +841,7 @@ calculate the probability of obtaining a particular outcome, e.g., 3 out of
 10 patients died.</p>
 <p>Let us look at our two hospitals and the outcomes. We can then see that 3 out of
 10 patients died in hospital A and 7 out of 10 patients in hospital B.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="logistic-regression.html#cb24-1" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>hospital, df<span class="sc">$</span>Y)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="logistic-regression.html#cb40-1" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>hospital, df<span class="sc">$</span>Y)</span></code></pre></div>
 <pre><code>##    
 ##     0 1
 ##   A 7 3
