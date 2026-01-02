@@ -42,3 +42,7 @@ hypothesis-testing
 no-relationship
 orange-dataset
 spearman-rank-correlation
+mice
+continuous-variables
+regression-based-imputation
+predictive-mean-matching
