@@ -36,3 +36,5 @@ calculating-coefficient
 hypothesis-testing
 no-relationship
 case-study
+orange-dataset
+spearman-rank-correlation
