@@ -31,10 +31,8 @@ missingness-not-at-random
 relationships-and-regression
 relationships
 pearson-correlation-coefficient
-linear-relationships
 calculating-coefficient
 hypothesis-testing
 no-relationship
-case-study
 orange-dataset
 spearman-rank-correlation
